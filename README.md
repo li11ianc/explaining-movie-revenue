@@ -1,2 +1,3 @@
 # project
-Starter docs for the final project
+
+Starter docs, code, and data for final project.
