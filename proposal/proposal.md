@@ -16,10 +16,14 @@ production\_companies production\_countries release\_date revenue
 runtime spoken\_languages status tagline title vote\_average Vote\_count
 
 Our research question would be, what variables correlate to a high
-popularity (variable = popularity)
-    rate?
+revenue rate?
 
 ## Section 2. Data analysis plan
+
+The outcome would be popularity, and predictors would include but not be
+limited to the following variables: budget, production\_companies,
+keywords, spoken\_languages, original\_language, release\_date, and
+revenue.
 
 ``` r
 library(tidyverse)
@@ -42,12 +46,27 @@ movies <- read_csv("tmdb_5000_movies.csv")
 
 ``` r
 movies %>%
-  summarise(meanpop = mean(popularity))
+  summarise(meanrev = mean(revenue)) 
 ```
 
     ## # A tibble: 1 x 1
-    ##   meanpop
-    ##     <dbl>
-    ## 1    21.5
+    ##     meanrev
+    ##       <dbl>
+    ## 1 82260639.
+
+This is the average revenue for all the movies in the dataset. We would
+consider a movie to have a high revenue if they are greater than the
+average.
+
+``` r
+movies %>%
+  ggplot(mapping= aes(original_language, log(revenue))) +
+  geom_boxplot() +
+  coord_flip()
+```
+
+    ## Warning: Removed 1427 rows containing non-finite values (stat_boxplot).
+
+![](proposal_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
 ## Section 3. Data

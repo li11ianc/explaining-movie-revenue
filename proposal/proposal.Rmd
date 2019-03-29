@@ -34,14 +34,16 @@ title
 vote_average
 Vote_count
 
-Our research question would be, what variables correlate to a high popularity (variable = popularity) rate? 
+Our research question would be, what variables correlate to a high revenue rate? 
 
 
 ## Section 2. Data analysis plan
+
+The outcome would be popularity, and predictors would include but not be limited to the following variables: budget, production_companies, keywords, spoken_languages, original_language, release_date, and revenue.
+
 ```{r}
 library(tidyverse)
 ```
-
 
 ```{r load-data, message=FALSE}
 movies <- read_csv("tmdb_5000_movies.csv")
@@ -49,9 +51,17 @@ movies <- read_csv("tmdb_5000_movies.csv")
 
 ```{r}
 movies %>%
-  summarise(meanpop = mean(popularity))
+  summarise(meanrev = mean(revenue)) 
 ```
 
+This is the average revenue for all the movies in the dataset. We would consider a movie to have a high revenue if they are greater than the average. 
+
+```{r}
+movies %>%
+  ggplot(mapping= aes(original_language, log(revenue))) +
+  geom_boxplot() +
+  coord_flip()
+```
 
 
 ## Section 3. Data
