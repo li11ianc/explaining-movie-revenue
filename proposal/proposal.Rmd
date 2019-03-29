@@ -1,7 +1,7 @@
 ---
-title: "PROJECT TITLE"
-author: "NAME HERE"
-date: "TODAY'S DATE"
+title: "How Does Hollywood Bring In the Big Bucks?"
+author: "zuck(R)berg"
+date: "03/29/19"
 output: github_document
 ---
 
@@ -47,6 +47,8 @@ library(tidyverse)
 
 ```{r load-data, message=FALSE}
 movies <- read_csv("tmdb_5000_movies.csv")
+movies <- movies %>%
+  select(-id, -homepage, -original_title, -popularity)
 ```
 
 ```{r}
@@ -54,14 +56,29 @@ movies %>%
   summarise(meanrev = mean(revenue)) 
 ```
 
+```{r hm}
+movies %>%
+  select(status) %>%
+  distinct()
+
+movies %>%
+  ggplot(aes(vote_average)) +
+  geom_histogram()
+```
+
+
 This is the average revenue for all the movies in the dataset. We would consider a movie to have a high revenue if they are greater than the average. 
 
-```{r}
+```{r graph}
 movies %>%
   ggplot(mapping= aes(original_language, log(revenue))) +
   geom_boxplot() +
   coord_flip()
 ```
 
-
 ## Section 3. Data
+
+```{r data-info}
+glimpse(movies)
+```
+
