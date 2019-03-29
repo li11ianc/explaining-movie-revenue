@@ -20,10 +20,11 @@ revenue rate?
 
 ## Section 2. Data analysis plan
 
-The outcome would be popularity, and predictors would include but not be
+The outcome would be revenue, and predictors would include but not be
 limited to the following variables: budget, production\_companies,
 keywords, spoken\_languages, original\_language, release\_date, and
-revenue.
+revenue,
+    popularity.
 
 ``` r
 library(tidyverse)

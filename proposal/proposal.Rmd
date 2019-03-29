@@ -39,7 +39,7 @@ Our research question would be, what variables correlate to a high revenue rate?
 
 ## Section 2. Data analysis plan
 
-The outcome would be popularity, and predictors would include but not be limited to the following variables: budget, production_companies, keywords, spoken_languages, original_language, release_date, and revenue.
+The outcome would be revenue, and predictors would include but not be limited to the following variables: budget, production_companies, keywords, spoken_languages, original_language, release_date, and revenue, popularity.
 
 ```{r}
 library(tidyverse)
