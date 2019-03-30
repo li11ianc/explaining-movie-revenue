@@ -158,6 +158,26 @@ movies %>%
 
 ![](proposal_files/figure-gfm/graph-1.png)<!-- -->
 
+``` r
+new <- movies %>%
+  group_by(original_language) %>%
+  summarise(means = mean(revenue)) 
+new %>%
+  ggplot(mapping = aes(original_language, means)) +
+  geom_bar(stat = "identity")
+```
+
+![](proposal_files/figure-gfm/-language-1.png)<!-- -->
+
+Here, you can see that the average revenue for each language. English,
+Japanese, and Telugu have the largest mean revenues. However, it should
+be noted that in the dataset, movies with the original language ot
+Telugu is very minimal, thus the average would only be based on these
+few movies. These languages having the highest revenue could be
+explained by a few factors: how many native speakers there are of that
+language, the popularity and amount of films produced in those countries
+with the specified language each year, among other factors.
+
 ## Section 3. Data
 
 ``` r
