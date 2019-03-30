@@ -122,6 +122,20 @@ low vote count for a lesser-known film could skew this vote and lead to
 outliers.
 
 ``` r
+ggplot(data = movies, aes(x = budget, y = revenue, color = high_rev)) +
+  geom_point(alpha = .5) +
+  labs(title = "Budget vs. Revenue")
+```
+
+![](proposal_files/figure-gfm/budget-vs-revenue-1.png)<!-- -->
+
+When comparing budget and revenue, it appears there may be an upward
+trend: an increase in budget may correlate to an increase in revenue.
+Investigation of outliers here (movies with large budgets and low
+revenues, or small budgets and high revenues) could reveal interesting
+trends.
+
+``` r
 movies %>%
   ggplot(mapping= aes(original_language, log(revenue + .01))) +
   geom_boxplot() +

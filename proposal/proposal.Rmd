@@ -95,6 +95,14 @@ ggplot(data = movies, aes(x = vote_average, y = revenue, color = high_rev)) +
 
 We examine the distribution of average ratings given to the movies in the set and look at the relationship between vote_average and revenue to determine if there is a correlation between people thinking a movie is good and having a high revenue. There seems to be an interesting selection of outlier films with extremely high ratings and no revenue. Perhaps we can investigate the variable vote_count to determine if a low vote count for a lesser-known film could skew this vote and lead to outliers.
 
+```{r budget-vs-revenue}
+ggplot(data = movies, aes(x = budget, y = revenue, color = high_rev)) +
+  geom_point(alpha = .5) +
+  labs(title = "Budget vs. Revenue")
+```
+
+When comparing budget and revenue, it appears there may be an upward trend: an increase in budget may correlate to an increase in revenue. Investigation of outliers here (movies with large budgets and low revenues, or small budgets and high revenues) could reveal interesting trends.
+
 ```{r graph}
 movies %>%
   ggplot(mapping= aes(original_language, log(revenue + .01))) +
