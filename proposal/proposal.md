@@ -15,41 +15,33 @@ original\_language original\_title overview popularity
 production\_companies production\_countries release\_date revenue
 runtime spoken\_languages status tagline title vote\_average Vote\_count
 
-Our research question would be, what variables correlate to a high
-revenue rate?
+We aim to investigate which features of a movie correspond to higher
+profits. Which variables from the dataset correlate to a high revenue
+rate?
 
-## Section 2. Data analysis plan
+## Section 2. Data Analysis Plan
 
-The outcome would be revenue, and predictors would include but not be
+Our outcome variable is revenue, and predictors would include but not be
 limited to the following variables: budget, production\_companies,
 keywords, spoken\_languages, original\_language, release\_date, and
-revenue,
-    popularity.
+vote\_average.
 
 ``` r
 library(tidyverse)
-```
 
-    ## ── Attaching packages ────────────────────────────────────────── tidyverse 1.2.1 ──
-
-    ## ✔ ggplot2 3.1.0       ✔ purrr   0.3.2  
-    ## ✔ tibble  2.1.1       ✔ dplyr   0.8.0.1
-    ## ✔ tidyr   0.8.3       ✔ stringr 1.4.0  
-    ## ✔ readr   1.3.1       ✔ forcats 0.4.0
-
-    ## ── Conflicts ───────────────────────────────────────────── tidyverse_conflicts() ──
-    ## ✖ dplyr::filter() masks stats::filter()
-    ## ✖ dplyr::lag()    masks stats::lag()
-
-``` r
 movies <- read_csv("tmdb_5000_movies.csv")
 movies <- movies %>%
   select(-id, -homepage, -original_title, -popularity)
 ```
 
+We remove the variables id, homepage, original\_title, and popularity to
+form an updated 16 column dataset- we will not use these in our
+analysis. We also filter the data so we will only be considering
+released movies, not rumored movies or those post production.
+
 ``` r
 movies %>%
-  summarise(meanrev = mean(revenue)) 
+  summarise(meanrev = mean(revenue))
 ```
 
     ## # A tibble: 1 x 1
@@ -58,40 +50,83 @@ movies %>%
     ## 1 82260639.
 
 ``` r
-movies %>%
-  select(status) %>%
-  distinct()
+#Plot log(revenue + .01) because log(0) is undefined and 1 cent makes a negligible difference
+ggplot(data = movies, aes(log(revenue + .01))) +
+  geom_histogram(binwidth = 1) +
+  labs(title = "Distribution of Movie Revenue")
 ```
 
-    ## # A tibble: 3 x 1
-    ##   status         
-    ##   <chr>          
-    ## 1 Released       
-    ## 2 Post Production
-    ## 3 Rumored
+![](proposal_files/figure-gfm/revenue-distribution-1.png)<!-- -->
+
+Mean revenue within the dataset is $82,260,639 and the data is
+left-skewed. A significant number of movies brought in $0 in revenue,
+and when we remove these films the mean revenue changes.
 
 ``` r
-movies %>%
-  ggplot(aes(vote_average)) +
-  geom_histogram()
+rev_movies <- movies %>%
+  filter(revenue != 0)
+
+rev_movies %>%
+  summarise(meanrev = mean(revenue))
+```
+
+    ## # A tibble: 1 x 1
+    ##      meanrev
+    ##        <dbl>
+    ## 1 117031353.
+
+``` r
+#Plot log(revenue)
+ggplot(data = rev_movies, aes(log(revenue))) +
+  geom_histogram(binwidth = 1) +
+  labs(title = "Distribution of Movie Revenue", subtitle = "Excluding Zero-Revenue Productions")
+```
+
+![](proposal_files/figure-gfm/zero-revenue-distribution-1.png)<!-- -->
+
+The mean revenue for all films with net profit is $117,031,353. We will
+consider any film with a greater revenue than this mean to have a “high”
+revenue.
+
+``` r
+ggplot(data = movies, aes(vote_average)) +
+  geom_histogram() +
+  labs(title = "Distribution of Vote Average")
 ```
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](proposal_files/figure-gfm/hm-1.png)<!-- -->
+![](proposal_files/figure-gfm/distribution-votes-1.png)<!-- -->
 
-This is the average revenue for all the movies in the dataset. We would
-consider a movie to have a high revenue if they are greater than the
-average.
+``` r
+movies <- movies %>%
+  mutate(high_rev = case_when(
+    revenue > 117031353 ~ "yes",
+    revenue <= 117031353 ~ "no"
+  ))
+
+ggplot(data = movies, aes(x = vote_average, y = revenue, color = high_rev)) +
+  geom_point(alpha = 0.3) +
+  labs(title = "Vote Average vs. Revenue")
+```
+
+![](proposal_files/figure-gfm/distribution-votes-2.png)<!-- -->
+
+We examine the distribution of average ratings given to the movies in
+the set and look at the relationship between vote\_average and revenue
+to determine if there is a correlation between people thinking a movie
+is good and having a high revenue. There seems to be an interesting
+selection of outlier films with extremely high ratings and no revenue.
+Perhaps we can investigate the variable vote\_count to determine if a
+low vote count for a lesser-known film could skew this vote and lead to
+outliers.
 
 ``` r
 movies %>%
-  ggplot(mapping= aes(original_language, log(revenue))) +
+  ggplot(mapping= aes(original_language, log(revenue + .01))) +
   geom_boxplot() +
   coord_flip()
 ```
-
-    ## Warning: Removed 1427 rows containing non-finite values (stat_boxplot).
 
 ![](proposal_files/figure-gfm/graph-1.png)<!-- -->
 
@@ -102,7 +137,7 @@ glimpse(movies)
 ```
 
     ## Observations: 4,803
-    ## Variables: 16
+    ## Variables: 17
     ## $ budget               <dbl> 2.37e+08, 3.00e+08, 2.45e+08, 2.50e+08, 2.6…
     ## $ genres               <chr> "[{\"id\": 28, \"name\": \"Action\"}, {\"id…
     ## $ keywords             <chr> "[{\"id\": 1463, \"name\": \"culture clash\…
@@ -119,3 +154,4 @@ glimpse(movies)
     ## $ title                <chr> "Avatar", "Pirates of the Caribbean: At Wor…
     ## $ vote_average         <dbl> 7.2, 6.9, 6.3, 7.6, 6.1, 5.9, 7.4, 7.3, 7.4…
     ## $ vote_count           <dbl> 11800, 4500, 4466, 9106, 2124, 3576, 3330, …
+    ## $ high_rev             <chr> "yes", "yes", "yes", "yes", "yes", "yes", "…
