@@ -9,6 +9,7 @@ The dataset we are using is “TMBD 5000 Movie Dataset.”
 
 Originally, we found this set on kaggle.com. The data originates from
 “The Movie Database” API, it was collected from this original dataset.
+Each case, or observation, represents a film.
 
 The data’s variables: budget genres homepage id keywords
 original\_language original\_title overview popularity
@@ -24,7 +25,7 @@ rate?
 Our outcome variable is revenue, and predictors would include but not be
 limited to the following variables: budget, production\_companies,
 keywords, spoken\_languages, original\_language, release\_date, and
-vote\_average.
+vote\_average. Possible comparison groups include
 
 ``` r
 library(tidyverse)
@@ -120,6 +121,19 @@ selection of outlier films with extremely high ratings and no revenue.
 Perhaps we can investigate the variable vote\_count to determine if a
 low vote count for a lesser-known film could skew this vote and lead to
 outliers.
+
+Statistical methods that will likely be useful in answering our question
+include backwards model selection (to determine with which variables
+together form the best linear model for revenue), as well as hypothesis
+testing (conducting a null hypothesis test for independence between
+revenue and other variables which we suspect correlate).
+
+We could conduct a null hypothesis test for independence between revenue
+and budget (although likely we will establish other categorical filters
+first, like examining the relationship per production company or within
+each genre). We would need a p-value less than .05 to reject the null
+hypothesis test and confirm that budget does in fact correlate to
+revenue.
 
 ``` r
 ggplot(data = movies, aes(x = budget, y = revenue, color = high_rev)) +

@@ -10,7 +10,7 @@ output: github_document
 
 The dataset we are using is “TMBD 5000 Movie Dataset.” 
 
-Originally, we found this set on kaggle.com. The data originates from “The Movie Database” API, it was collected from this original dataset.
+Originally, we found this set on kaggle.com. The data originates from “The Movie Database” API, it was collected from this original dataset. Each case, or observation, represents a film.
 
 The data’s variables: 
 budget
@@ -38,7 +38,7 @@ We aim to investigate which features of a movie correspond to higher profits. Wh
 
 ## Section 2. Data Analysis Plan
 
-Our outcome variable is revenue, and predictors would include but not be limited to the following variables: budget, production_companies, keywords, spoken_languages, original_language, release_date, and vote_average.
+Our outcome variable is revenue, and predictors would include but not be limited to the following variables: budget, production_companies, keywords, spoken_languages, original_language, release_date, and vote_average. Possible comparison groups include 
 
 ```{r load-data, message=FALSE}
 library(tidyverse)
@@ -94,6 +94,10 @@ ggplot(data = movies, aes(x = vote_average, y = revenue, color = high_rev)) +
 ```
 
 We examine the distribution of average ratings given to the movies in the set and look at the relationship between vote_average and revenue to determine if there is a correlation between people thinking a movie is good and having a high revenue. There seems to be an interesting selection of outlier films with extremely high ratings and no revenue. Perhaps we can investigate the variable vote_count to determine if a low vote count for a lesser-known film could skew this vote and lead to outliers.
+
+Statistical methods that will likely be useful in answering our question include backwards model selection (to determine with which variables together form the best linear model for revenue), as well as hypothesis testing (conducting a null hypothesis test for independence between revenue and other variables which we suspect correlate).
+
+We could conduct a null hypothesis test for independence between revenue and budget (although likely we will establish other categorical filters first, like examining the relationship per production company or within each genre). We would need a p-value less than .05 to reject the null hypothesis test and confirm that budget does in fact correlate to revenue.
 
 ```{r budget-vs-revenue}
 ggplot(data = movies, aes(x = budget, y = revenue, color = high_rev)) +
