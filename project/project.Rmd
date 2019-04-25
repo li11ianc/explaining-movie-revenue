@@ -19,6 +19,7 @@ You can add sections as you see fit. Make sure you have a section called Introdu
 
 ```{r load-data, message=FALSE}
 library(tidyverse)
+library(dplyr)
 
 movies <- read_csv("/cloud/project/data/tmdb_5000_movies.csv")
 movies <- movies %>%
@@ -69,7 +70,8 @@ movies <- movies %>%
     pratio <= 1 ~ "no"
   )
   )
-movies
+movies <- movies %>%
+  filter(pratio <= 200)
 ```
 
 ### Making a Categorical "spoken languages" Variable 
@@ -99,6 +101,36 @@ movies <- movies %>%
 
 movies <- movies %>%
   mutate(year = as.numeric(year), month = as.numeric(month), day = as.numeric(day))
+
+movies
+```
+### Genre trends
+
+```{r }
+movies <- movies %>%
+  mutate(horror = ifelse(str_detect(genres, "Horror"), "yes", "no"))
+
+horror_only <- movies %>%
+  filter(horror == "yes") %>%
+  group_by(year) %>%
+  mutate(m_pratio = median(pratio)) 
+
+ggplot(horror_only, aes(year, m_pratio)) +
+  geom_bar(stat="identity") +
+  labs(title = "Change in Median Profitability Ratio",
+       x = "Year",
+       y = "Median Profitability Ratio")
+```
+
+```{r}
+horror_count <- horror_only %>%
+  count(year)
+
+ggplot(horror_count, aes(year, n)) +
+  geom_bar(stat="identity") +
+  labs(title = "Change in Number of Horror Movies",
+       x = "Year",
+       y = "# of Horror Movies")
 ```
 
 

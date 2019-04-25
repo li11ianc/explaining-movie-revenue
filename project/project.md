@@ -83,7 +83,16 @@ movie was profitable or not, based on the profitiability ratio. If the
 ratio was greater than 1, it was considered profitable. It will simply
 say “yes” for profitable, and “no” for non-profitable.
 
-    ## # A tibble: 3,102 x 19
+### Making a Categorical “spoken languages” Variable
+
+Here, we will be creating a new vategorical variable, that signifies if
+the only language spoken in the film is english, or not. If the only
+spoken language is english, the value will be “yes,” if there are other
+languages spoken or english is not used, the value will be “no.”
+
+### Splitting date variable
+
+    ## # A tibble: 3,086 x 23
     ##    budget genres keywords original_langua… overview popularity
     ##     <dbl> <chr>  <chr>    <chr>            <chr>         <dbl>
     ##  1 2.37e8 "[{\"… "[{\"id… en               In the …      150. 
@@ -96,19 +105,17 @@ say “yes” for profitable, and “no” for non-profitable.
     ##  8 2.80e8 "[{\"… "[{\"id… en               When To…      134. 
     ##  9 2.50e8 "[{\"… "[{\"id… en               As Harr…       98.9
     ## 10 2.50e8 "[{\"… "[{\"id… en               Fearing…      156. 
-    ## # … with 3,092 more rows, and 13 more variables:
-    ## #   production_companies <chr>, production_countries <chr>,
-    ## #   release_date <date>, revenue <dbl>, runtime <dbl>,
+    ## # … with 3,076 more rows, and 17 more variables:
+    ## #   production_companies <chr>, production_countries <chr>, year <dbl>,
+    ## #   month <dbl>, day <dbl>, revenue <dbl>, runtime <dbl>,
     ## #   spoken_languages <chr>, status <chr>, tagline <chr>, title <chr>,
-    ## #   vote_average <dbl>, vote_count <dbl>, pratio <dbl>, profit <chr>
+    ## #   vote_average <dbl>, vote_count <dbl>, pratio <dbl>, profit <chr>,
+    ## #   spokenlength <int>, english <chr>
 
-### Making a Categorical “spoken languages” Variable
+### Genre trends
 
-Here, we will be creating a new vategorical variable, that signifies if
-the only language spoken in the film is english, or not. If the only
-spoken language is english, the value will be “yes,” if there are other
-languages spoken or english is not used, the value will be “no.”
+![](project_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
-### Splitting date variable
+![](project_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
 ### Conclusion
