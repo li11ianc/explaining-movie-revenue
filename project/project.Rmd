@@ -91,9 +91,15 @@ movies <- movies %>%
 ```
 
 
+### Splitting date variable
 
+```{r separate-date-variable}
+movies <- movies %>%
+  separate(release_date, c("year", "month", "day"), sep = "-")
 
-
+movies <- movies %>%
+  mutate(year = as.numeric(year), month = as.numeric(month), day = as.numeric(day))
+```
 
 
 ### Conclusion
