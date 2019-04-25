@@ -83,4 +83,50 @@ movie was profitable or not, based on the profitiability ratio. If the
 ratio was greater than 1, it was considered profitable. It will simply
 say “yes” for profitable, and “no” for non-profitable.
 
+    ## # A tibble: 3,102 x 19
+    ##    budget genres keywords original_langua… overview popularity
+    ##     <dbl> <chr>  <chr>    <chr>            <chr>         <dbl>
+    ##  1 2.37e8 "[{\"… "[{\"id… en               In the …      150. 
+    ##  2 3.00e8 "[{\"… "[{\"id… en               Captain…      139. 
+    ##  3 2.45e8 "[{\"… "[{\"id… en               A crypt…      107. 
+    ##  4 2.50e8 "[{\"… "[{\"id… en               Followi…      112. 
+    ##  5 2.60e8 "[{\"… "[{\"id… en               John Ca…       43.9
+    ##  6 2.58e8 "[{\"… "[{\"id… en               The see…      116. 
+    ##  7 2.60e8 "[{\"… "[{\"id… en               When th…       48.7
+    ##  8 2.80e8 "[{\"… "[{\"id… en               When To…      134. 
+    ##  9 2.50e8 "[{\"… "[{\"id… en               As Harr…       98.9
+    ## 10 2.50e8 "[{\"… "[{\"id… en               Fearing…      156. 
+    ## # … with 3,092 more rows, and 13 more variables:
+    ## #   production_companies <chr>, production_countries <chr>,
+    ## #   release_date <date>, revenue <dbl>, runtime <dbl>,
+    ## #   spoken_languages <chr>, status <chr>, tagline <chr>, title <chr>,
+    ## #   vote_average <dbl>, vote_count <dbl>, pratio <dbl>, profit <chr>
+
+### Making a Categorical “spoken languages” Variable
+
+Here, we will be creating a new vategorical variable, that signifies if
+the only language spoken in the film is english, or not. If the only
+spoken language is english, the value will be “yes,” if there are other
+languages spoken or english is not used, the value will be “no.”
+
+    ## # A tibble: 3,102 x 21
+    ##    budget genres keywords original_langua… overview popularity
+    ##     <dbl> <chr>  <chr>    <chr>            <chr>         <dbl>
+    ##  1 2.37e8 "[{\"… "[{\"id… en               In the …      150. 
+    ##  2 3.00e8 "[{\"… "[{\"id… en               Captain…      139. 
+    ##  3 2.45e8 "[{\"… "[{\"id… en               A crypt…      107. 
+    ##  4 2.50e8 "[{\"… "[{\"id… en               Followi…      112. 
+    ##  5 2.60e8 "[{\"… "[{\"id… en               John Ca…       43.9
+    ##  6 2.58e8 "[{\"… "[{\"id… en               The see…      116. 
+    ##  7 2.60e8 "[{\"… "[{\"id… en               When th…       48.7
+    ##  8 2.80e8 "[{\"… "[{\"id… en               When To…      134. 
+    ##  9 2.50e8 "[{\"… "[{\"id… en               As Harr…       98.9
+    ## 10 2.50e8 "[{\"… "[{\"id… en               Fearing…      156. 
+    ## # … with 3,092 more rows, and 15 more variables:
+    ## #   production_companies <chr>, production_countries <chr>,
+    ## #   release_date <date>, revenue <dbl>, runtime <dbl>,
+    ## #   spoken_languages <chr>, status <chr>, tagline <chr>, title <chr>,
+    ## #   vote_average <dbl>, vote_count <dbl>, pratio <dbl>, profit <chr>,
+    ## #   spokenlength <int>, english <chr>
+
 ### Conclusion

@@ -65,11 +65,35 @@ movies <- movies %>%
   mutate(pratio = revenue/budget) 
 movies <- movies %>%
   mutate(profit = case_when(
-    pratio > 1 ~ "Yes",
-    pratio <= 1 ~ "No"
+    pratio > 1 ~ "yes",
+    pratio <= 1 ~ "no"
   )
   )
+movies
 ```
+
+### Making a Categorical "spoken languages" Variable 
+
+Here, we will be creating a new vategorical variable, that signifies if the only language spoken in the film is english, or not. If the only spoken language is english, the value will be "yes," if there are other languages spoken or english is not used, the value will be "no."
+
+```{r}
+library(stringr)
+
+movies <- movies %>%
+  mutate(spokenlength = str_length(spoken_languages))
+
+movies %>%
+  mutate(english = case_when(
+    spokenlength == 40 ~ "yes",
+    spokenlength > 40 ~ "no",
+    spokenlength < 40 ~ "no"
+  ))
+```
+
+
+
+
+
 
 
 ### Conclusion
