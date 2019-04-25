@@ -111,7 +111,28 @@ languages spoken or english is not used, the value will be “no.”
 
 ### Splitting date variable
 
-    ## # A tibble: 3,086 x 23
+### Genre trends
+
+![](project_files/figure-gfm/genre-trends-1.png)<!-- -->
+
+![](project_files/figure-gfm/horror-1.png)<!-- -->
+
+### Making a variable for holiday releases
+
+### Making a variable for likely sequels
+
+### Making a variable for major production companies
+
+Major production companies according to Wikipedia are Universal Pictures
+(NBCUniversal), Paramount Pictures (Viacom), WarnerBros. Pictures
+(WarnerMedia), Walt Disney Pictures (Walt Disney Studios), Columbia
+Pictures (Sony Pictures) (in the format Major film studio unit (Studio
+parent) from
+<https://en.wikipedia.org/wiki/Major_film_studio#Present_2>).
+
+### Making a variable for tagline length
+
+    ## # A tibble: 3,086 x 29
     ##    budget genres keywords original_langua… overview popularity
     ##     <dbl> <chr>  <chr>    <chr>            <chr>         <dbl>
     ##  1 2.37e8 "[{\"… "[{\"id… en               In the …      150. 
@@ -124,17 +145,15 @@ languages spoken or english is not used, the value will be “no.”
     ##  8 2.80e8 "[{\"… "[{\"id… en               When To…      134. 
     ##  9 2.50e8 "[{\"… "[{\"id… en               As Harr…       98.9
     ## 10 2.50e8 "[{\"… "[{\"id… en               Fearing…      156. 
-    ## # … with 3,076 more rows, and 17 more variables:
+    ## # … with 3,076 more rows, and 23 more variables:
     ## #   production_companies <chr>, production_countries <chr>, year <dbl>,
     ## #   month <dbl>, day <dbl>, revenue <dbl>, runtime <dbl>,
     ## #   spoken_languages <chr>, status <chr>, tagline <chr>, title <chr>,
     ## #   vote_average <dbl>, vote_count <dbl>, pratio <dbl>, profit <chr>,
-    ## #   spokenlength <int>, english <chr>
+    ## #   spokenlength <int>, english <chr>, horror <chr>,
+    ## #   holiday_release <chr>, likely_sequel <chr>, if_major <chr>,
+    ## #   major_productionco <chr>, tag_length <int>
 
-### Genre trends
-
-![](project_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
-
-![](project_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+### Making a preliminary linear model
 
 ### Conclusion

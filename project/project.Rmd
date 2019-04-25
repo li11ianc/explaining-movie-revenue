@@ -20,6 +20,8 @@ You can add sections as you see fit. Make sure you have a section called Introdu
 ```{r load-data, message=FALSE}
 library(tidyverse)
 library(dplyr)
+library(broom)
+library(stringr)
 
 movies <- read_csv("/cloud/project/data/tmdb_5000_movies.csv")
 movies <- movies %>%
@@ -80,8 +82,7 @@ movies
 
 Here, we will be creating a new vategorical variable, that signifies if the only language spoken in the film is english, or not. If the only spoken language is english, the value will be "yes," if there are other languages spoken or english is not used, the value will be "no."
 
-```{r}
-library(stringr)
+```{r spoken-languages}
 
 movies <- movies %>%
   mutate(spokenlength = str_length(spoken_languages))
@@ -104,12 +105,10 @@ movies <- movies %>%
 
 movies <- movies %>%
   mutate(year = as.numeric(year), month = as.numeric(month), day = as.numeric(day))
-
-movies
 ```
 ### Genre trends
 
-```{r }
+```{r genre-trends}
 movies <- movies %>%
   mutate(horror = ifelse(str_detect(genres, "Horror"), "yes", "no"))
 
@@ -125,7 +124,7 @@ ggplot(horror_only, aes(year, m_pratio)) +
        y = "Median Profitability Ratio")
 ```
 
-```{r}
+```{r horror}
 horror_count <- horror_only %>%
   count(year)
 
@@ -136,6 +135,103 @@ ggplot(horror_count, aes(year, n)) +
        y = "# of Horror Movies")
 ```
 
+### Making a variable for holiday releases
+
+```{r holiday-variable}
+movies <- movies %>%
+  mutate(holiday_release = case_when(
+    # Period between day before Christmas Eve and New Year's Eve (inclusive)
+    month == 12 & day %in% c(23, 24, 25, 26, 27, 28, 29, 30, 31) ~ "yes",
+    # New Year's Day (and the day after), flex period for Martin Luther King Jr. Day
+    month == 1 & day %in% c(1, 2, 15, 16, 17, 18, 19, 20, 21) ~ "yes",
+    # Valentine's Day (and the days before and after), flex period for Presidents' Day
+    month == 2 & day %in% c(13, 14, 15, 16, 17, 18, 19, 20) ~ "yes",
+    # Flex period for Memorial Day
+    month == 5 & day %in% c(25, 26, 27, 28, 29, 30, 31) ~ "yes",
+    # Independence Day (and the days before and after)
+    month == 7 & day %in% c(3, 4, 5) ~ "yes",
+    # Flex period for Labor Day
+    month == 9 & day %in% c(1, 2, 3, 4, 5, 6, 7) ~ "yes",
+    # Flex period for Thanksgiving, Veterans' Day (and the days before and after)
+    month == 11 & day %in% c(10, 11, 12, 22, 23, 24, 25, 26, 27, 28) ~ "yes",
+    TRUE ~ "no"
+  ))
+```
+
+### Making a variable for likely sequels
+
+```{r likely-sequel}
+series <- movies$title %>%
+  str_detect(":")
+
+sequel2 <- movies$title %>%
+  str_detect("2$")
+
+sequel3 <- movies$title %>%
+  str_detect("3")
+
+movies <- movies %>%
+  mutate(likely_sequel = case_when(
+    series == TRUE ~ "yes",
+    sequel2 == TRUE ~ "yes",
+    sequel3 == TRUE ~ "yes",
+    TRUE ~ "no"
+  ))
+```
+
+### Making a variable for major production companies
+
+```{r major-production-company}
+universal_list <- movies$production_companies %>%
+  str_detect("Universal Pictures")
+
+paramount_list <- movies$production_companies %>%
+  str_detect("Paramount Pictures")
+
+warner_list <- movies$production_companies %>%
+  str_detect("Warner Bros.")
+
+disney_list <- movies$production_companies %>%
+  str_detect("Walt Disney Pictures")
+
+columbia_list <- movies$production_companies %>%
+  str_detect("Columbia Pictures")
+
+movies <- movies %>%
+  mutate(if_major = case_when(
+    universal_list == TRUE ~ "yes",
+    paramount_list == TRUE ~ "yes",
+    warner_list == TRUE ~ "yes", 
+    disney_list == TRUE ~ "yes",
+    columbia_list == TRUE ~ "yes",
+    TRUE ~ "no"
+  )) %>%
+  mutate(major_productionco = case_when(
+    universal_list == TRUE ~ "universal",
+    paramount_list == TRUE ~ "paramount",
+    warner_list == TRUE ~ "warner",
+    disney_list == TRUE ~ "disney",
+    columbia_list == TRUE ~ "columbia",
+    TRUE ~ "other"
+  ))
+```
+
+Major production companies according to Wikipedia are Universal Pictures (NBCUniversal), Paramount Pictures (Viacom), WarnerBros. Pictures (WarnerMedia), Walt Disney Pictures (Walt Disney Studios), Columbia Pictures (Sony Pictures) (in the format Major film studio unit (Studio parent) from https://en.wikipedia.org/wiki/Major_film_studio#Present_2).
+
+### Making a variable for tagline length
+
+```{r tagline-length}
+movies <- movies %>%
+  mutate(tag_length = str_length(tagline))
+movies
+```
+
+### Making a preliminary linear model
+
+```{r preliminary-linear-model}
+
+m_pratio <- lm(revenue ~ holiday_release + likely_sequel + budget + runtime + if_major + major_productionco + tag_length + vote_average + vote_count, data = movies)
+```
 
 ### Conclusion
 
