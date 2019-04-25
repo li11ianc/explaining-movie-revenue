@@ -23,12 +23,16 @@ library(tidyverse)
 movies <- read_csv("/cloud/project/data/tmdb_5000_movies.csv")
 movies <- movies %>%
   select(-id, -homepage, -original_title)
-movies 
 movies <- movies %>%
   filter(original_language == "en")
+movies <- movies %>%
+  filter(budget > 0) %>%
+  filter(revenue > 0)
 
-movies
 ```
+
+For our dataset of 5000 movies, we decided to remove the variables id, homepage, and original_title, since we felt that these variables did not contribute to our research question of what contributed to a "successful" movie. Additionally, since we found problems with the budget and revenue variables of non-American movies (not in US dollars), we decided to filter for only english movies as a proxy for American movies. (Since there is no definite way to filter for only American movies). 
+We also filtered for movies that had a budget and revenue that were nonzero, this is so that our data would not be skewed by movies that were not intended to draw revenue or were not of the same budget caliber of the rest of the films. 
 
 ```{r popularity-explanations}
 ggplot(data = movies, aes(y = popularity)) +
@@ -49,6 +53,25 @@ movies %>%
   head(10)
 movies %>%
   distinct(production_companies)
+```
+
+### Creating a "Profitability" Variables
+
+The first profitability variable is a ratio of revenue to budget, to show by what percentage a movie was "profitable."
+This second profitability variable is a categorical variable that deciphers if the movie was profitable or not, based on the profitiability ratio. If the ratio was greater than 1, it was considered profitable. It will simply say "yes" for profitable, and "no" for non-profitable.
+
+```{r}
+movies <- movies %>% 
+  mutate(profitableratio = revenue/budget) 
+movies <- movies %>%
+  mutate(profitable = case_when(
+    profitableratio > 1 ~ "Yes",
+    profitableratio <= 1 ~ "No"
+  )
+  )
+
+movies %>%
+  select(profitable)
 ```
 
 
