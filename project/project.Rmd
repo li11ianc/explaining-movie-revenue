@@ -82,7 +82,7 @@ library(stringr)
 movies <- movies %>%
   mutate(spokenlength = str_length(spoken_languages))
 
-movies %>%
+movies <- movies %>%
   mutate(english = case_when(
     spokenlength == 40 ~ "yes",
     spokenlength > 40 ~ "no",
