@@ -1,7 +1,7 @@
 ---
 title: "PROJECT TITLE"
-author: "NAME HERE"
-date: "TODAY'S DATE"
+author: "Zuck(R)berg"
+date: "25 April 2019"
 output: github_document
 ---
 
@@ -12,3 +12,41 @@ knitr::opts_chunk$set(echo = FALSE)
 Your project goes here! Before you submit, make sure your chunks are turned off with `echo = FALSE`. 
 
 You can add sections as you see fit. Make sure you have a section called Introduction at the beginning and a section called Conclusion at the end. The rest is up to you!
+
+### Introduction
+
+### Stuff
+
+```{r load-data, message=FALSE}
+library(tidyverse)
+
+movies <- read_csv("/cloud/project/data/tmdb_5000_movies.csv")
+movies <- movies %>%
+  select(-id, -homepage, -original_title)
+```
+
+```{r popularity-explanations}
+ggplot(data = movies, aes(y = popularity)) +
+  geom_boxplot()
+
+movies %>%
+  select(title, popularity) %>%
+  arrange(desc(popularity)) %>%
+  head(10)
+```
+
+We are going to not look at popularity because we can't figure out where this came from,,, etc explain this.
+
+```{r high-budget-list}
+movies %>%
+  select(title, budget) %>%
+  arrange(desc(budget)) %>%
+  head(10)
+movies %>%
+  distinct(production_companies)
+```
+
+
+### Conclusion
+
+
