@@ -72,6 +72,10 @@ movies <- movies %>%
   )
 movies <- movies %>%
   filter(pratio <= 200)
+<<<<<<< HEAD
+=======
+movies
+>>>>>>> 1f58b3fdfaceca512e13d7081830ccf8ded2155b
 ```
 
 ### Making a Categorical "spoken languages" Variable 
@@ -90,6 +94,7 @@ movies <- movies %>%
     spokenlength > 40 ~ "no",
     spokenlength < 40 ~ "no"
   ))
+
 ```
 
 
