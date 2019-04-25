@@ -14,6 +14,44 @@ end. The rest is up to you\!
 
 ### Stuff
 
+    ## # A tibble: 4,803 x 17
+    ##    budget genres keywords original_langua… overview popularity
+    ##     <dbl> <chr>  <chr>    <chr>            <chr>         <dbl>
+    ##  1 2.37e8 "[{\"… "[{\"id… en               In the …      150. 
+    ##  2 3.00e8 "[{\"… "[{\"id… en               Captain…      139. 
+    ##  3 2.45e8 "[{\"… "[{\"id… en               A crypt…      107. 
+    ##  4 2.50e8 "[{\"… "[{\"id… en               Followi…      112. 
+    ##  5 2.60e8 "[{\"… "[{\"id… en               John Ca…       43.9
+    ##  6 2.58e8 "[{\"… "[{\"id… en               The see…      116. 
+    ##  7 2.60e8 "[{\"… "[{\"id… en               When th…       48.7
+    ##  8 2.80e8 "[{\"… "[{\"id… en               When To…      134. 
+    ##  9 2.50e8 "[{\"… "[{\"id… en               As Harr…       98.9
+    ## 10 2.50e8 "[{\"… "[{\"id… en               Fearing…      156. 
+    ## # … with 4,793 more rows, and 11 more variables:
+    ## #   production_companies <chr>, production_countries <chr>,
+    ## #   release_date <date>, revenue <dbl>, runtime <dbl>,
+    ## #   spoken_languages <chr>, status <chr>, tagline <chr>, title <chr>,
+    ## #   vote_average <dbl>, vote_count <dbl>
+
+    ## # A tibble: 4,505 x 17
+    ##    budget genres keywords original_langua… overview popularity
+    ##     <dbl> <chr>  <chr>    <chr>            <chr>         <dbl>
+    ##  1 2.37e8 "[{\"… "[{\"id… en               In the …      150. 
+    ##  2 3.00e8 "[{\"… "[{\"id… en               Captain…      139. 
+    ##  3 2.45e8 "[{\"… "[{\"id… en               A crypt…      107. 
+    ##  4 2.50e8 "[{\"… "[{\"id… en               Followi…      112. 
+    ##  5 2.60e8 "[{\"… "[{\"id… en               John Ca…       43.9
+    ##  6 2.58e8 "[{\"… "[{\"id… en               The see…      116. 
+    ##  7 2.60e8 "[{\"… "[{\"id… en               When th…       48.7
+    ##  8 2.80e8 "[{\"… "[{\"id… en               When To…      134. 
+    ##  9 2.50e8 "[{\"… "[{\"id… en               As Harr…       98.9
+    ## 10 2.50e8 "[{\"… "[{\"id… en               Fearing…      156. 
+    ## # … with 4,495 more rows, and 11 more variables:
+    ## #   production_companies <chr>, production_countries <chr>,
+    ## #   release_date <date>, revenue <dbl>, runtime <dbl>,
+    ## #   spoken_languages <chr>, status <chr>, tagline <chr>, title <chr>,
+    ## #   vote_average <dbl>, vote_count <dbl>
+
 ![](project_files/figure-gfm/popularity-explanations-1.png)<!-- -->
 
     ## # A tibble: 10 x 2
@@ -47,7 +85,7 @@ this came from,,, etc explain this.
     ##  9 The Dark Knight Rises                       250000000
     ## 10 Harry Potter and the Half-Blood Prince      250000000
 
-    ## # A tibble: 3,697 x 1
+    ## # A tibble: 3,445 x 1
     ##    production_companies                                                    
     ##    <chr>                                                                   
     ##  1 "[{\"name\": \"Ingenious Film Partners\", \"id\": 289}, {\"name\": \"Tw…
@@ -60,6 +98,6 @@ this came from,,, etc explain this.
     ##  8 "[{\"name\": \"Marvel Studios\", \"id\": 420}, {\"name\": \"Prime Focus…
     ##  9 "[{\"name\": \"Warner Bros.\", \"id\": 6194}, {\"name\": \"Heyday Films…
     ## 10 "[{\"name\": \"DC Comics\", \"id\": 429}, {\"name\": \"Atlas Entertainm…
-    ## # … with 3,687 more rows
+    ## # … with 3,435 more rows
 
 ### Conclusion
