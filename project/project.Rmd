@@ -69,6 +69,8 @@ movies <- movies %>%
     pratio <= 1 ~ "no"
   )
   )
+movies <- movies %>%
+  filter(pratio <= 200)
 movies
 ```
 

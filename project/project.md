@@ -83,7 +83,7 @@ movie was profitable or not, based on the profitiability ratio. If the
 ratio was greater than 1, it was considered profitable. It will simply
 say “yes” for profitable, and “no” for non-profitable.
 
-    ## # A tibble: 3,102 x 19
+    ## # A tibble: 3,086 x 19
     ##    budget genres keywords original_langua… overview popularity
     ##     <dbl> <chr>  <chr>    <chr>            <chr>         <dbl>
     ##  1 2.37e8 "[{\"… "[{\"id… en               In the …      150. 
@@ -96,7 +96,7 @@ say “yes” for profitable, and “no” for non-profitable.
     ##  8 2.80e8 "[{\"… "[{\"id… en               When To…      134. 
     ##  9 2.50e8 "[{\"… "[{\"id… en               As Harr…       98.9
     ## 10 2.50e8 "[{\"… "[{\"id… en               Fearing…      156. 
-    ## # … with 3,092 more rows, and 13 more variables:
+    ## # … with 3,076 more rows, and 13 more variables:
     ## #   production_companies <chr>, production_countries <chr>,
     ## #   release_date <date>, revenue <dbl>, runtime <dbl>,
     ## #   spoken_languages <chr>, status <chr>, tagline <chr>, title <chr>,
