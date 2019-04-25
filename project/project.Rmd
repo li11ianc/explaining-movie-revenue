@@ -62,16 +62,13 @@ This second profitability variable is a categorical variable that deciphers if t
 
 ```{r}
 movies <- movies %>% 
-  mutate(profitableratio = revenue/budget) 
+  mutate(pratio = revenue/budget) 
 movies <- movies %>%
-  mutate(profitable = case_when(
-    profitableratio > 1 ~ "Yes",
-    profitableratio <= 1 ~ "No"
+  mutate(profit = case_when(
+    pratio > 1 ~ "Yes",
+    pratio <= 1 ~ "No"
   )
   )
-
-movies %>%
-  select(profitable)
 ```
 
 

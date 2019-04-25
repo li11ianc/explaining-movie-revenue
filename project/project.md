@@ -83,19 +83,4 @@ movie was profitable or not, based on the profitiability ratio. If the
 ratio was greater than 1, it was considered profitable. It will simply
 say “yes” for profitable, and “no” for non-profitable.
 
-    ## # A tibble: 3,102 x 1
-    ##    profitable
-    ##    <chr>     
-    ##  1 Yes       
-    ##  2 Yes       
-    ##  3 Yes       
-    ##  4 Yes       
-    ##  5 Yes       
-    ##  6 Yes       
-    ##  7 Yes       
-    ##  8 Yes       
-    ##  9 Yes       
-    ## 10 Yes       
-    ## # … with 3,092 more rows
-
 ### Conclusion
