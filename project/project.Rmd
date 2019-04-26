@@ -107,6 +107,8 @@ movies <- movies %>%
 movies <- movies %>%
   mutate(year = as.numeric(year), month = as.numeric(month), day = as.numeric(day))
 ```
+
+
 ### Genre trends
 
 ```{r genre-trends}
@@ -321,7 +323,9 @@ m_pratio
 
 tidy(m_pratio) %>%
   select(term, estimate)
+
 ```
+
 
 We fit a regression model to predict pulse rate based on holiday_release, likely_sequel, budget, if_major, major_productionco, tag_length, english, runtime, action, horror, oneword, the interaction between budget and likely_sequel, and the interaction between budget and if_major. We chose to examine the those interactions because whether a movie is a sequel (and thus has a known revenue for its precedents and some expectation that people will see it) may be related to its budget and also the relation between budget and having access to the resources we assume accompany a major production company may also be related in an interesting way.
 
