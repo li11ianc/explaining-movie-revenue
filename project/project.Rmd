@@ -229,7 +229,6 @@ movies <- movies %>%
 
 ### Making a variable for major production companies
 
-
 ```{r major-production-company}
 universal_list <- movies$production_companies %>%
   str_detect("Universal Pictures")
@@ -291,6 +290,24 @@ movies <- movies %>%
 ```
 
 Major production companies according to Wikipedia are Universal Pictures (NBCUniversal), Paramount Pictures (Viacom), WarnerBros. Pictures (WarnerMedia), Walt Disney Pictures (Walt Disney Studios), Columbia Pictures (Sony Pictures) (in the format Major film studio unit (Studio parent) from https://en.wikipedia.org/wiki/Major_film_studio#Present_2).
+
+```{r bar-graph-production-companies}
+pc_analysis <- movies %>%
+  group_by(major_productionco) %>%
+  summarise(median = median(pratio))
+
+ggplot(data = pc_analysis, aes(x = reorder(major_productionco, median), y = median, fill = major_productionco)) +
+  geom_bar(stat = "identity") +
+  coord_flip()
+
+pc_analysis2 <- movies %>%
+  filter(major_productionco %in% c("pixar", "marvel", "20thc", "dreamworks", "universal")) %>%
+  group_by(major_productionco, year) %>%
+  summarise(median = median(pratio))
+
+ggplot(data = pc_analysis2, aes(x = year, y = median, color = major_productionco, group = major_productionco)) +
+  geom_line()
+```
 
 ### Making a variable for tagline length
 

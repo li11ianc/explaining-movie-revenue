@@ -119,6 +119,8 @@ Pictures (Sony Pictures) (in the format Major film studio unit (Studio
 parent) from
 <https://en.wikipedia.org/wiki/Major_film_studio#Present_2>).
 
+![](project_files/figure-gfm/bar-graph-production-companies-1.png)<!-- -->![](project_files/figure-gfm/bar-graph-production-companies-2.png)<!-- -->
+
 ### Making a variable for tagline length
 
     ## # A tibble: 3,086 x 31
