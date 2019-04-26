@@ -22,6 +22,7 @@ library(tidyverse)
 library(dplyr)
 library(broom)
 library(stringr)
+library(infer)
 
 movies <- read_csv("/cloud/project/data/tmdb_5000_movies.csv")
 movies <- movies %>%
@@ -75,7 +76,6 @@ movies <- movies %>%
 movies <- movies %>%
   filter(pratio <= 200)
 
-movies
 ```
 
 ### Making a Categorical "spoken languages" Variable 
@@ -106,6 +106,8 @@ movies <- movies %>%
 movies <- movies %>%
   mutate(year = as.numeric(year), month = as.numeric(month), day = as.numeric(day))
 ```
+
+
 ### Genre trends
 
 ```{r genre-trends}
@@ -243,6 +245,21 @@ disney_list <- movies$production_companies %>%
 columbia_list <- movies$production_companies %>%
   str_detect("Columbia Pictures")
 
+dreamworks_list <- movies$production_companies %>%
+  str_detect("DreamWorks")
+
+twentiethc_list <- movies$production_companies %>%
+  str_detect("Twentieth Century Fox Film Corporation")
+
+lionsgate_list <- movies$production_companies %>%
+  str_detect("Lionsgate")
+
+marvel_list <- movies$production_companies %>%
+  str_detect("Marvel Studios")
+
+pixar_list <- movies$production_companies %>%
+  str_detect("Pixar Animation Studios")
+
 movies <- movies %>%
   mutate(if_major = case_when(
     universal_list == TRUE ~ "yes",
@@ -250,6 +267,11 @@ movies <- movies %>%
     warner_list == TRUE ~ "yes", 
     disney_list == TRUE ~ "yes",
     columbia_list == TRUE ~ "yes",
+    dreamworks_list == TRUE ~ "yes",
+    twentiethc_list == TRUE ~ "yes",
+    lionsgate_list == TRUE ~ "yes",
+    marvel_list == TRUE ~ "yes",
+    pixar_list == TRUE ~ "yes",
     TRUE ~ "no"
   )) %>%
   mutate(major_productionco = case_when(
@@ -258,11 +280,34 @@ movies <- movies %>%
     warner_list == TRUE ~ "warner",
     disney_list == TRUE ~ "disney",
     columbia_list == TRUE ~ "columbia",
+    dreamworks_list == TRUE ~ "dreamworks",
+    twentiethc_list == TRUE ~ "20thc",
+    lionsgate_list == TRUE ~ "lionsgate",
+    marvel_list == TRUE ~ "marvel",
+    pixar_list == TRUE ~ "pixar",
     TRUE ~ "other"
   ))
 ```
 
 Major production companies according to Wikipedia are Universal Pictures (NBCUniversal), Paramount Pictures (Viacom), WarnerBros. Pictures (WarnerMedia), Walt Disney Pictures (Walt Disney Studios), Columbia Pictures (Sony Pictures) (in the format Major film studio unit (Studio parent) from https://en.wikipedia.org/wiki/Major_film_studio#Present_2).
+
+```{r bar-graph-production-companies}
+pc_analysis <- movies %>%
+  group_by(major_productionco) %>%
+  summarise(median = median(pratio))
+
+ggplot(data = pc_analysis, aes(x = reorder(major_productionco, median), y = median, fill = major_productionco)) +
+  geom_bar(stat = "identity") +
+  coord_flip()
+
+pc_analysis2 <- movies %>%
+  filter(major_productionco %in% c("pixar", "marvel", "20thc", "dreamworks", "universal")) %>%
+  group_by(major_productionco, year) %>%
+  summarise(median = median(pratio))
+
+ggplot(data = pc_analysis2, aes(x = year, y = median, color = major_productionco, group = major_productionco)) +
+  geom_line()
+```
 
 ### Making a variable for tagline length
 
@@ -274,10 +319,71 @@ movies
 
 ### Making a preliminary linear model
 
-```{r preliminary-linear-model}
+We aim to find an ideal linear model to predict profitability ratio based on a variety of factors; before constructing our model, we will remove observations that lack values for these factors. 
 
-m_pratio <- lm(revenue ~ holiday_release + likely_sequel + budget + runtime + if_major + major_productionco + tag_length + vote_average + vote_count, data = movies)
+```{r filter-data}
+# filter for NAs (no NAs in holiday_release, likely_sequel, budget, if_major, major_productionco, vote_average, vote_count, english, horror )
+movies_filt <- movies %>%
+  filter(!is.na(tag_length))
+
+movies_filt <- movies_filt %>%
+  mutate(major_productionco = fct_relevel(major_productionco, "other"))
+movies 
 ```
+
+We filter the dataset to remove movies with NA values so that our backwards model selection will work (the only NAs in the values we are considering are for tagline length)
+
+```{r preliminary-linear-model}
+m_pratio <- lm(pratio ~ holiday_release + likely_sequel + budget + if_major + major_productionco + tag_length + english + runtime + action + horror + runtime + oneword + budget*if_major + likely_sequel*budget, data = movies_filt)
+m_pratio
+
+tidy(m_pratio) %>%
+  select(term, estimate)
+
+```
+
+
+We fit a regression model to predict pulse rate based on holiday_release, likely_sequel, budget, if_major, major_productionco, tag_length, english, runtime, action, horror, oneword, the interaction between budget and likely_sequel, and the interaction between budget and if_major. We chose to examine the those interactions because whether a movie is a sequel (and thus has a known revenue for its precedents and some expectation that people will see it) may be related to its budget and also the relation between budget and having access to the resources we assume accompany a major production company may also be related in an interesting way.
+
+Linear Model: 
+
+Profitability Ratio = `r tidy(m_pratio)[1,2]` + `r tidy(m_pratio)[2,2]`(Holiday Release) + `r tidy(m_pratio)[3,2]`(Likely Sequel) + `r tidy(m_pratio)[4,2]`(Budget) + `r tidy(m_pratio)[5,2]`(Major Production Company) + `r tidy(m_pratio)[6,2]`(20th Century Fox) `r tidy(m_pratio)[7,2]`(Columbia) + + `r tidy(m_pratio)[8,2]`(Disney) + `r tidy(m_pratio)[9,2]`(DreamWorks) + `r tidy(m_pratio)[10,2]`(Lionsgate) + `r tidy(m_pratio)[11,2]`(Marvel) + `r tidy(m_pratio)[12,2]`(Paramount) + `r tidy(m_pratio)[13,2]`(Pixar) + `r tidy(m_pratio)[14,2]`(Universal) + `r tidy(m_pratio)[15,2]`(Tagline Length) + `r tidy(m_pratio)[16,2]`(Spoken Language English) + `r tidy(m_pratio)[17,2]`(Runtime) + `r tidy(m_pratio)[18,2]`(Action) + `r tidy(m_pratio)[19,2]`(Horror) + `r tidy(m_pratio)[20,2]`(One Word Title) + `r tidy(m_pratio)[21,2]`(Budget * Major Production Company) + `r tidy(m_pratio)[22,2]`(Likely Sequel * Budget)
+
+```{r r-orig-model}
+glance(m_pratio)
+
+rsq <- glance(m_pratio)$adj.r.squared
+```
+
+We compute the adjusted R-squared value for the filtered model for pulse as `r rsq`; this is a helpful measure of the goodness of the fit of the model.
+
+```{r aic-model-selection}
+selected_m_pratio <- step(m_pratio, direction = "backward")
+
+tidy(selected_m_pratio) %>% 
+  select(term, estimate)
+```
+
+We perform backwards model selection based on AIC, Akaike Information Criterion (another measure of the fit of a model), and obtain the best fit.
+
+Selected Linear Model: 
+
+Profitability Ratio = `r tidy(selected_m_pratio)[1,2]` + `r tidy(selected_m_pratio)[2,2]`(Holiday Release) + `r tidy(selected_m_pratio)[3,2]`(Likely Sequel) + `r tidy(selected_m_pratio)[4,2]`(Budget) + `r tidy(selected_m_pratio)[5,2]`(Major Production Company) + `r tidy(selected_m_pratio)[6,2]`(Spoken Language English) + `r tidy(selected_m_pratio)[7,2]`(Runtime) + `r tidy(selected_m_pratio)[8,2]`(Action) + `r tidy(selected_m_pratio)[9,2]`(Horror) + `r tidy(m_pratio)[10,2]`(One Word Title) + `r tidy(m_pratio)[11,2]`(Budget * Major Production Company) + `r tidy(m_pratio)[12,2]`(Likely Sequel * Budget)
+
+```{r aic-model-comparison}
+glance(m_pratio)$AIC
+glance(selected_m_pratio)$AIC
+```
+
+Our AIC value decreases for the selected model, which indicates that it is a better fit. Thus factors of holiday_release, likely_sequel, budget, ETC TYPE THE REST HERE are the best predictors of profitability. 
+
+```{r rsq-selected-model}
+newrsq <- glance(selected_m_pratio)$r.squared
+newrsq
+```
+
+Our R-squared value of `r newrsq` for our final selected model indicates that `r newrsq *100`% of the variation in Profitability can be well-explained by a linear relationship with INSERT LIST HERE
+
 
 ### Conclusion
 
