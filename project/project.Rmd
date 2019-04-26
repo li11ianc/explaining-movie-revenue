@@ -228,6 +228,7 @@ movies <- movies %>%
 
 ### Making a variable for major production companies
 
+
 ```{r major-production-company}
 universal_list <- movies$production_companies %>%
   str_detect("Universal Pictures")
@@ -309,23 +310,24 @@ movies_filt <- movies %>%
 
 movies_filt <- movies_filt %>%
   mutate(major_productionco = fct_relevel(major_productionco, "other"))
+movies 
 ```
 
 We filter the dataset to remove movies with NA values so that our backwards model selection will work (the only NAs in the values we are considering are for tagline length)
 
 ```{r preliminary-linear-model}
-m_pratio <- lm(pratio ~ holiday_release + likely_sequel + budget + if_major + major_productionco + tag_length + english + horror + budget*if_major + likely_sequel*budget, data = movies_filt)
+m_pratio <- lm(pratio ~ holiday_release + likely_sequel + budget + if_major + major_productionco + tag_length + english + runtime + action + horror + runtime + oneword + budget*if_major + likely_sequel*budget, data = movies_filt)
 m_pratio
 
 tidy(m_pratio) %>%
   select(term, estimate)
 ```
 
-We fit a regression model to predict pulse rate based on holiday_release, likely_sequel, budget, if_major, major_productionco, tag_length, english, horror, the interaction between budget and likely_sequel, and the interaction between budget and if_major. We chose to examine the those interactions because whether a movie is a sequel (and thus has a known revenue for its precedents and some expectation that people will see it) may be related to its budget and also the relation between budget and having access to the resources we assume accompany a major production company may also be related in an interesting way.
+We fit a regression model to predict pulse rate based on holiday_release, likely_sequel, budget, if_major, major_productionco, tag_length, english, runtime, action, horror, oneword, the interaction between budget and likely_sequel, and the interaction between budget and if_major. We chose to examine the those interactions because whether a movie is a sequel (and thus has a known revenue for its precedents and some expectation that people will see it) may be related to its budget and also the relation between budget and having access to the resources we assume accompany a major production company may also be related in an interesting way.
 
 Linear Model: 
 
-Profitability Ratio = `r tidy(m_pratio)[1,2]` + `r tidy(m_pratio)[2,2]`(Holiday Release) + `r tidy(m_pratio)[3,2]`(Likely Sequel) + `r tidy(m_pratio)[4,2]`(Budget) + `r tidy(m_pratio)[5,2]`(Major Production Company) + `r tidy(m_pratio)[6,2]`(20th Century Fox) `r tidy(m_pratio)[6,2]`(Columbia) + + `r tidy(m_pratio)[6,2]`(Disney) + `r tidy(m_pratio)[6,2]`(DreamWorks) + `r tidy(m_pratio)[6,2]`(Lionsgate) + `r tidy(m_pratio)[6,2]`(Marvel) + `r tidy(m_pratio)[7,2]`(Paramount) + `r tidy(m_pratio)[6,2]`(Pixar) + `r tidy(m_pratio)[8,2]`(Universal) + `r tidy(m_pratio)[9,2]`(Warner) + `r tidy(m_pratio)[10,2]`(Tagline Length) + `r tidy(m_pratio)[11,2]`(Spoken Language English) + `r tidy(m_pratio)[12,2]`(Horror) + `r tidy(m_pratio)[13,2]`(Budget * Major Production Company) + `r tidy(m_pratio)[14,2]`(Likely Sequel * Budget)
+Profitability Ratio = `r tidy(m_pratio)[1,2]` + `r tidy(m_pratio)[2,2]`(Holiday Release) + `r tidy(m_pratio)[3,2]`(Likely Sequel) + `r tidy(m_pratio)[4,2]`(Budget) + `r tidy(m_pratio)[5,2]`(Major Production Company) + `r tidy(m_pratio)[6,2]`(20th Century Fox) `r tidy(m_pratio)[7,2]`(Columbia) + + `r tidy(m_pratio)[8,2]`(Disney) + `r tidy(m_pratio)[9,2]`(DreamWorks) + `r tidy(m_pratio)[10,2]`(Lionsgate) + `r tidy(m_pratio)[11,2]`(Marvel) + `r tidy(m_pratio)[12,2]`(Paramount) + `r tidy(m_pratio)[13,2]`(Pixar) + `r tidy(m_pratio)[14,2]`(Universal) + `r tidy(m_pratio)[15,2]`(Tagline Length) + `r tidy(m_pratio)[16,2]`(Spoken Language English) + `r tidy(m_pratio)[17,2]`(Runtime) + `r tidy(m_pratio)[18,2]`(Action) + `r tidy(m_pratio)[19,2]`(Horror) + `r tidy(m_pratio)[20,2]`(One Word Title) + `r tidy(m_pratio)[21,2]`(Budget * Major Production Company) + `r tidy(m_pratio)[22,2]`(Likely Sequel * Budget)
 
 ```{r r-orig-model}
 glance(m_pratio)
@@ -346,7 +348,7 @@ We perform backwards model selection based on AIC, Akaike Information Criterion 
 
 Selected Linear Model: 
 
-Profitability Ratio = `r tidy(selected_m_pratio)[1,2]` + `r tidy(selected_m_pratio)[2,2]`(Holiday Release) + `r tidy(selected_m_pratio)[3,2]`(Likely Sequel) + `r tidy(selected_m_pratio)[4,2]`(Budget) + `r tidy(selected_m_pratio)[5,2]`(Columbia) + `r tidy(selected_m_pratio)[6,2]`(Disney) + `r tidy(selected_m_pratio)[7,2]`(Paramount) + `r tidy(selected_m_pratio)[8,2]`(Universal) + `r tidy(selected_m_pratio)[9,2]`(Warner) + `r tidy(m_pratio)[10,2]`(Spoken Language English) + `r tidy(m_pratio)[11,2]`(Horror) + `r tidy(m_pratio)[12,2]`(Likely Sequel * Budget)
+Profitability Ratio = `r tidy(selected_m_pratio)[1,2]` + `r tidy(selected_m_pratio)[2,2]`(Holiday Release) + `r tidy(selected_m_pratio)[3,2]`(Likely Sequel) + `r tidy(selected_m_pratio)[4,2]`(Budget) + `r tidy(selected_m_pratio)[5,2]`(Major Production Company) + `r tidy(selected_m_pratio)[6,2]`(Spoken Language English) + `r tidy(selected_m_pratio)[7,2]`(Runtime) + `r tidy(selected_m_pratio)[8,2]`(Action) + `r tidy(selected_m_pratio)[9,2]`(Horror) + `r tidy(m_pratio)[10,2]`(One Word Title) + `r tidy(m_pratio)[11,2]`(Budget * Major Production Company) + `r tidy(m_pratio)[12,2]`(Likely Sequel * Budget)
 
 ```{r aic-model-comparison}
 glance(m_pratio)$AIC
