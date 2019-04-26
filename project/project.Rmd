@@ -282,3 +282,4 @@ m_pratio <- lm(revenue ~ holiday_release + likely_sequel + budget + runtime + if
 ### Conclusion
 
 
+
