@@ -24,6 +24,8 @@ library(broom)
 library(stringr)
 library(infer)
 
+set.seed(5000)
+
 movies <- read_csv("/cloud/project/data/tmdb_5000_movies.csv")
 movies <- movies %>%
   select(-id, -homepage, -original_title)
@@ -166,20 +168,44 @@ ggplot(action_count, aes(year, n)) +
 
 ### Title and Profitability
 
-```{r title-len}
+```{r words-pratio}
 movies <- movies %>%
-  mutate(oneword = ifelse(!str_detect(title, " "), "yes", "no")) 
+  mutate(few_words = ifelse(sapply(strsplit(title, " "), length) <= 3, "no", "yes")) 
+  
+ggplot(movies, mapping = aes(few_words, pratio)) +
+  geom_bar(stat="identity")
+```
 
-title_analysis <- movies %>%
-  group_by(oneword) %>%
-  summarise(median = median(pratio))
+```{r title-test}
+sample_stat <- movies %>%
+  group_by(few_words) %>%
+  summarise(samp_med = median(pratio)) %>%
+  summarise(diff(samp_med)) %>%
+  pull()
 
+sample_stat
+```
 
-ggplot(title_analysis, aes(oneword, median)) +
-  geom_bar(stat="identity") +
-  labs(title = "Difference in Median Profitability Ratio Between One Word and Multi Word Titles",
-       x = "One Word Title?",
-       y = "Median Profitability Ratio")
+```{r title-null-distr}
+null_distr <- movies %>%
+  specify(response = pratio, explanatory = few_words) %>%
+  hypothesize(null = "independence") %>%
+  generate(reps = 1000, type = "permute") %>%
+  calculate(stat = "diff in medians", order = c("yes", "no"))
+```
+
+```{r title-distr-vis}
+ggplot(null_distr, aes(x = stat)) +
+  geom_histogram() +
+  geom_vline(xintercept = sample_stat, color = "red") +
+  geom_vline(xintercept = sample_stat * -1, color = "red")+
+  labs(title = "Null Distribution of Differences in Medians")
+```
+
+```{r title-p-val}
+null_distr %>%
+  filter(stat >= sample_stat) %>%
+  summarise(pvalue = 2 * (n() / 1000))
 ```
 
 
@@ -303,7 +329,7 @@ ggplot(data = pc_analysis, aes(x = reorder(major_productionco, median), y = medi
 pc_analysis2 <- movies %>%
   filter(major_productionco %in% c("pixar", "marvel", "20thc", "dreamworks", "universal")) %>%
   group_by(major_productionco, year) %>%
-  summarise(median = median(pratio))
+  summarize(median = median(pratio))
 
 ggplot(data = pc_analysis2, aes(x = year, y = median, color = major_productionco, group = major_productionco)) +
   geom_line()
@@ -334,7 +360,7 @@ movies
 We filter the dataset to remove movies with NA values so that our backwards model selection will work (the only NAs in the values we are considering are for tagline length)
 
 ```{r preliminary-linear-model}
-m_pratio <- lm(pratio ~ holiday_release + likely_sequel + budget + if_major + major_productionco + tag_length + english + runtime + action + horror + runtime + oneword + budget*if_major + likely_sequel*budget, data = movies_filt)
+m_pratio <- lm(pratio ~ holiday_release + likely_sequel + budget + if_major + major_productionco + tag_length + english + runtime + action + horror + runtime + few_words + budget*if_major + likely_sequel*budget, data = movies_filt)
 m_pratio
 
 tidy(m_pratio) %>%
@@ -343,7 +369,7 @@ tidy(m_pratio) %>%
 ```
 
 
-We fit a regression model to predict pulse rate based on holiday_release, likely_sequel, budget, if_major, major_productionco, tag_length, english, runtime, action, horror, oneword, the interaction between budget and likely_sequel, and the interaction between budget and if_major. We chose to examine the those interactions because whether a movie is a sequel (and thus has a known revenue for its precedents and some expectation that people will see it) may be related to its budget and also the relation between budget and having access to the resources we assume accompany a major production company may also be related in an interesting way.
+We fit a regression model to predict pulse rate based on holiday_release, likely_sequel, budget, if_major, major_productionco, tag_length, english, runtime, action, horror, few_words, the interaction between budget and likely_sequel, and the interaction between budget and if_major. We chose to examine the those interactions because whether a movie is a sequel (and thus has a known revenue for its precedents and some expectation that people will see it) may be related to its budget and also the relation between budget and having access to the resources we assume accompany a major production company may also be related in an interesting way.
 
 Linear Model: 
 
