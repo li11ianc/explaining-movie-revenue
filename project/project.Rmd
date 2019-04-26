@@ -80,6 +80,23 @@ movies <- movies %>%
 
 ```
 
+To find the 95% confidence interval of pratio:
+
+```{r}
+boot_dist <- movies %>%
+  specify(response = "pratio") %>%
+  generate(reps = 1000, type = "bootstrap") %>%
+  calculate(stat = "median")
+
+boot_dist %>%
+  summarise(
+    lower = quantile(stat, 0.025),
+    uppper = quantile(stat, 0.975)
+  )
+```
+
+Insert narrative about confidence interval:
+
 ### Making a Categorical "spoken languages" Variable 
 
 Here, we will be creating a new vategorical variable, that signifies if the only language spoken in the film is english, or not. If the only spoken language is english, the value will be "yes," if there are other languages spoken or english is not used, the value will be "no."
@@ -112,10 +129,61 @@ movies <- movies %>%
 
 ### Genre trends
 
+We wanted to explore how genre affects certain trends within the dataset. Thus we created a few genre related variables that we thought would yield the most effect. 
+
 ```{r genre-trends}
 movies <- movies %>%
   mutate(horror = ifelse(str_detect(genres, "Horror"), "yes", "no"))
+```
 
+```{r}
+movies %>%
+  group_by(horror) %>%
+  summarise(median(budget))
+```
+
+We chose the horror genre since we found that horror movies significantly have lower budgets, to see if horror movies then have higher pratios since they have less money to make to "break even" and make a profit. Also, some of the most profitable movies have been horror movies, such as Paranormal Activity, that had a very low budget.
+
+We then tested the question: Does this data provide convincing evidence of a difference in median pratios for horror vs non horror movies?
+
+Null Hypothesis: The movie being a horror movie does cause a difference in median pratio.
+
+```{r}
+sampmedian_diff <- movies %>%
+  group_by(horror) %>%
+  summarise(samp_median = median(pratio)) %>%
+  summarise(diff(samp_median)) %>%
+  pull()
+sampmedian_diff
+
+null_dist <- movies %>%
+  specify(response = pratio, explanatory = horror) %>%
+  hypothesize(null = "independence") %>%
+  generate(reps = 1000, type = "permute") %>%
+  calculate(stat = "diff in medians", order = c("yes", "no"))
+
+ggplot(data = null_dist, aes(x = stat)) +
+  geom_histogram(binwidth = .05) +
+  geom_vline(xintercept = sampmedian_diff, color = "red") +
+  geom_vline(xintercept = -1 * sampmedian_diff, color = "red") +
+  labs(title = "Null distribution of differences in medians")
+
+null_dist %>%
+  filter(stat <= -sampmedian_diff ) %>%
+  summarise(pvalue = 2 *(n() / 1000))
+
+null_dist %>%
+  summarise(
+    lower = quantile(stat, .025),
+    upper = quantile(stat, .975)
+  )
+```
+
+We found the p-value to be 0, thus it proved to be significantly significant, which we then could accept the null hypothesis that the movie being of a horror genre does affect median pratio. 
+
+Add narrative about confidence interval. 
+
+```{r}
 horror_only <- movies %>%
   filter(horror == "yes") %>%
   group_by(year) %>%
@@ -139,9 +207,53 @@ ggplot(horror_count, aes(year, n)) +
        y = "# of Horror Movies")
 ```
 
-```{r action}
+
+Add narrative about why we chose action:
+
+```{r}
 movies <- movies %>%
   mutate(action = ifelse(str_detect(genres, "Action"), "yes", "no"))
+movies %>%
+  group_by(action) %>%
+  summarise(median(budget))
+```
+
+
+```{r}
+
+sampmedian_diff <- movies %>%
+  group_by(action) %>%
+  summarise(samp_median = median(pratio)) %>%
+  summarise(diff(samp_median)) %>%
+  pull()
+sampmedian_diff
+
+null_dist <- movies %>%
+  specify(response = pratio, explanatory = action) %>%
+  hypothesize(null = "independence") %>%
+  generate(reps = 1000, type = "permute") %>%
+  calculate(stat = "diff in medians", order = c("yes", "no"))
+
+ggplot(data = null_dist, aes(x = stat)) +
+  geom_histogram(binwidth = .05) +
+  geom_vline(xintercept = sampmedian_diff, color = "red") +
+  geom_vline(xintercept = -1 * sampmedian_diff, color = "red") +
+  labs(title = "Null distribution of differences in medians")
+
+null_dist %>%
+  filter(stat >= -sampmedian_diff ) %>%
+  summarise(pvalue = 2 *(n() / 1000))
+
+null_dist %>%
+  summarise(
+    lower = quantile(stat, .025),
+    upper = quantile(stat, .975)
+  )
+```
+
+Add narrative about p-value and confidence intervals:
+
+```{r action}
 
 action_only <- movies %>%
   filter(action == "yes") %>%
@@ -165,6 +277,8 @@ ggplot(action_count, aes(year, n)) +
        x = "Year",
        y = "# of Action Movies")
 ```
+
+
 
 ### Title and Profitability
 
@@ -334,6 +448,48 @@ pc_analysis2 <- movies %>%
 ggplot(data = pc_analysis2, aes(x = year, y = median, color = major_productionco, group = major_productionco)) +
   geom_line()
 ```
+
+
+Simulating if production companies have cause a difference in median pratio:
+
+Add what the null hypothesis is:
+
+```{r}
+sampmedian_diff <- movies %>%
+  filter(!is.na(if_major) & !is.na(pratio)) %>%
+  group_by(if_major) %>%
+  summarise(samp_median = median(pratio)) %>%
+  summarise(diff(samp_median)) %>%
+  pull()
+sampmedian_diff
+```
+
+```{r}
+null_dist <- movies %>%
+  specify(response = pratio, explanatory = if_major) %>%
+  hypothesize(null = "independence") %>%
+  generate(reps = 1000, type = "permute") %>%
+  calculate(stat = "diff in medians", order = c("yes", "no"))
+
+ggplot(data = null_dist, aes(x = stat)) +
+  geom_histogram(binwidth = .05) +
+  geom_vline(xintercept = sampmedian_diff, color = "red") +
+  geom_vline(xintercept = -1 * sampmedian_diff, color = "red") +
+  labs(title = "Null distribution of differences in medians")
+
+null_dist %>%
+  filter(stat <= sampmedian_diff ) %>%
+  summarise(pvalue = 2 *(n() / 1000))
+
+null_dist %>%
+  summarise(
+    lower = quantile(stat, .025),
+    upper = quantile(stat, .975)
+  )
+```
+
+Add narrative about confidence interval and p-value:
+
 
 ### Making a variable for tagline length
 

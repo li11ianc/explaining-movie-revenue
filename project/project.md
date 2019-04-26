@@ -83,21 +83,96 @@ movie was profitable or not, based on the profitiability ratio. If the
 ratio was greater than 1, it was considered profitable. It will simply
 say “yes” for profitable, and “no” for non-profitable.
 
+To find the 95% confidence interval of pratio:
+
+    ## # A tibble: 1 x 2
+    ##   lower uppper
+    ##   <dbl>  <dbl>
+    ## 1  2.20   2.39
+
+Insert narrative about confidence interval:
+
 ### Making a Categorical “spoken languages” Variable
 
 Here, we will be creating a new vategorical variable, that signifies if
 the only language spoken in the film is english, or not. If the only
 spoken language is english, the value will be “yes,” if there are other
-languages spoken or english is not used, the value will be
-    “no.”
+languages spoken or english is not used, the value will be “no.”
 
 ### Splitting date variable
 
 ### Genre trends
 
-![](project_files/figure-gfm/genre-trends-1.png)<!-- -->
+We wanted to explore how genre affects certain trends within the
+dataset. Thus we created a few genre related variables that we thought
+would yield the most effect.
+
+    ## # A tibble: 2 x 2
+    ##   horror `median(budget)`
+    ##   <chr>             <dbl>
+    ## 1 no             30000000
+    ## 2 yes            14500000
+
+We chose the horror genre since we found that horror movies
+significantly have lower budgets, to see if horror movies then have
+higher pratios since they have less money to make to “break even” and
+make a profit. Also, some of the most profitable movies have been horror
+movies, such as Paranormal Activity, that had a very low budget.
+
+We then tested the question: Does this data provide convincing evidence
+of a difference in median pratios for horror vs non horror movies?
+
+Null Hypothesis: The movie being a horror movie does cause a difference
+in median pratio.
+
+    ## [1] 0.5147204
+
+![](project_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
+    ## # A tibble: 1 x 1
+    ##   pvalue
+    ##    <dbl>
+    ## 1  0.004
+
+    ## # A tibble: 1 x 2
+    ##    lower upper
+    ##    <dbl> <dbl>
+    ## 1 -0.297 0.365
+
+We found the p-value to be 0, thus it proved to be significantly
+significant, which we then could accept the null hypothesis that the
+movie being of a horror genre does affect median pratio.
+
+Add narrative about confidence interval.
+
+![](project_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 ![](project_files/figure-gfm/horror-1.png)<!-- -->
+
+Add narrative about why we chose action:
+
+    ## # A tibble: 2 x 2
+    ##   action `median(budget)`
+    ##   <chr>             <dbl>
+    ## 1 no             21000000
+    ## 2 yes            50000000
+
+    ## [1] -0.2232571
+
+![](project_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
+    ## # A tibble: 1 x 1
+    ##   pvalue
+    ##    <dbl>
+    ## 1  0.072
+
+    ## # A tibble: 1 x 2
+    ##    lower upper
+    ##    <dbl> <dbl>
+    ## 1 -0.200 0.241
+
+Add narrative about p-value and confidence
+    intervals:
 
 ![](project_files/figure-gfm/action-1.png)<!-- -->
 
@@ -116,7 +191,7 @@ languages spoken or english is not used, the value will be
     ## # A tibble: 1 x 1
     ##   pvalue
     ##    <dbl>
-    ## 1  0.008
+    ## 1  0.012
 
 ### Making a variable for holiday releases
 
@@ -132,6 +207,27 @@ parent) from
 <https://en.wikipedia.org/wiki/Major_film_studio#Present_2>).
 
 ![](project_files/figure-gfm/bar-graph-production-companies-1.png)<!-- -->![](project_files/figure-gfm/bar-graph-production-companies-2.png)<!-- -->
+
+Simulating if production companies have cause a difference in median
+pratio:
+
+Add what the null hypothesis is:
+
+    ## [1] 0.6328664
+
+![](project_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
+    ## # A tibble: 1 x 1
+    ##   pvalue
+    ##    <dbl>
+    ## 1      2
+
+    ## # A tibble: 1 x 2
+    ##    lower upper
+    ##    <dbl> <dbl>
+    ## 1 -0.184 0.208
+
+Add narrative about confidence interval and p-value:
 
 ### Making a variable for tagline length
 
