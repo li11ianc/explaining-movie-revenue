@@ -126,6 +126,7 @@ movies <- movies %>%
   mutate(year = as.numeric(year), month = as.numeric(month), day = as.numeric(day))
 ```
 
+^^this code chunk should perhaps go somewhere else but insert quick narrative saying how we transformed dates from year-mo-da character form to numerical separate variables
 
 ### Genre trends
 
@@ -278,8 +279,6 @@ ggplot(action_count, aes(year, n)) +
        y = "# of Action Movies")
 ```
 
-
-
 ### Title and Profitability
 
 ```{r words-pratio}
@@ -346,6 +345,8 @@ movies <- movies %>%
   ))
 ```
 
+this is explained in the comments but those wont show in final form so insert narrative about what we consider a holiday and why we wanted to investigate this (a lot of people go to movies around the holidays, etc)
+
 ### Making a variable for likely sequels
 
 ```{r likely-sequel}
@@ -366,6 +367,8 @@ movies <- movies %>%
     TRUE ~ "no"
   ))
 ```
+
+this basically sorts for titles that inlcude ":" or end with "2" or "3" to create a list of movies that are probably part of series (not a perfect variable just an approximation). we wanted to look at this because some sequels of really good movies flop etc. but a good first movie tends to motivate people to go see the next one
 
 ### Making a variable for major production companies
 
@@ -429,7 +432,11 @@ movies <- movies %>%
   ))
 ```
 
-Major production companies according to Wikipedia are Universal Pictures (NBCUniversal), Paramount Pictures (Viacom), WarnerBros. Pictures (WarnerMedia), Walt Disney Pictures (Walt Disney Studios), Columbia Pictures (Sony Pictures) (in the format Major film studio unit (Studio parent) from https://en.wikipedia.org/wiki/Major_film_studio#Present_2).
+Major production companies according to Wikipedia are Universal Pictures (NBCUniversal), Paramount Pictures (Viacom), WarnerBros. Pictures (WarnerMedia), Walt Disney Pictures (Walt Disney Studios), Columbia Pictures (Sony Pictures) (in the format Major film studio unit (Studio parent) from https://en.wikipedia.org/wiki/Major_film_studio#Present_2) 
+
+we got lionsgate, dreamworks, and twentieth century fox from a list at https://reelrundown.com/film-industry/Top-10-Movie-Production-Companies to add more major companies to our analysis (maybe look at website real quick to say why this is)
+
+and also pixar and marvel are notorious for having very popular, profitable movies (also with endgame coming out and skyrocketing to the top of popularity charts on imdb, tmdb, etc.) we added these as well
 
 ```{r bar-graph-production-companies}
 pc_analysis <- movies %>%
@@ -439,16 +446,9 @@ pc_analysis <- movies %>%
 ggplot(data = pc_analysis, aes(x = reorder(major_productionco, median), y = median, fill = major_productionco)) +
   geom_bar(stat = "identity") +
   coord_flip()
-
-pc_analysis2 <- movies %>%
-  filter(major_productionco %in% c("pixar", "marvel", "20thc", "dreamworks", "universal")) %>%
-  group_by(major_productionco, year) %>%
-  summarize(median = median(pratio))
-
-ggplot(data = pc_analysis2, aes(x = year, y = median, color = major_productionco, group = major_productionco)) +
-  geom_line()
 ```
 
+Insert narrative interpreting the bar graph
 
 Simulating if production companies have cause a difference in median pratio:
 
@@ -499,6 +499,8 @@ movies <- movies %>%
 movies
 ```
 
+either explain this or get rid of it tbh (but we do need something to be eliminated from our linear model later on so maybe its worth it)
+
 ### Making a preliminary linear model
 
 We aim to find an ideal linear model to predict profitability ratio based on a variety of factors; before constructing our model, we will remove observations that lack values for these factors. 
@@ -523,7 +525,6 @@ tidy(m_pratio) %>%
   select(term, estimate)
 
 ```
-
 
 We fit a regression model to predict pulse rate based on holiday_release, likely_sequel, budget, if_major, major_productionco, tag_length, english, runtime, action, horror, few_words, the interaction between budget and likely_sequel, and the interaction between budget and if_major. We chose to examine the those interactions because whether a movie is a sequel (and thus has a known revenue for its precedents and some expectation that people will see it) may be related to its budget and also the relation between budget and having access to the resources we assume accompany a major production company may also be related in an interesting way.
 
@@ -564,8 +565,28 @@ newrsq <- glance(selected_m_pratio)$r.squared
 newrsq
 ```
 
-Our R-squared value of `r newrsq` for our final selected model indicates that `r newrsq *100`% of the variation in Profitability can be well-explained by a linear relationship with INSERT LIST HERE
+Our R-squared value of `r newrsq` for our final selected model indicates that `r newrsq *100`% of the variation in profitability ratio can be well-explained by a linear relationship with INSERT LIST HERE
 
+### A quick look at budget vs revenue
+
+```{r budget-revenue-model}
+m_revenue <- lm(revenue ~ budget, data = movies)
+
+tidy(m_revenue) %>%
+  select(term, estimate)
+
+rsq_mrevenue <- glance(m_revenue)$r.squared
+```
+
+`r rsq_mrevenue` explain this r squared
+
+```{r visualize-revenue-model}
+ggplot(data = movies, aes(x = budget, y = revenue, color = if_major)) +
+  geom_jitter(alpha = .3) +
+  stat_smooth(method = "lm", se = FALSE)
+```
+
+explain this visualization
 
 ### Conclusion
 

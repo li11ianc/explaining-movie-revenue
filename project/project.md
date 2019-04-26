@@ -101,6 +101,10 @@ languages spoken or english is not used, the value will be “no.”
 
 ### Splitting date variable
 
+^^this code chunk should perhaps go somewhere else but insert quick
+narrative saying how we transformed dates from year-mo-da character form
+to numerical separate variables
+
 ### Genre trends
 
 We wanted to explore how genre affects certain trends within the
@@ -195,7 +199,17 @@ Add narrative about p-value and confidence
 
 ### Making a variable for holiday releases
 
+this is explained in the comments but those wont show in final form so
+insert narrative about what we consider a holiday and why we wanted to
+investigate this (a lot of people go to movies around the holidays, etc)
+
 ### Making a variable for likely sequels
+
+this basically sorts for titles that inlcude “:” or end with “2” or “3”
+to create a list of movies that are probably part of series (not a
+perfect variable just an approximation). we wanted to look at this
+because some sequels of really good movies flop etc. but a good first
+movie tends to motivate people to go see the next one
 
 ### Making a variable for major production companies
 
@@ -204,9 +218,21 @@ Major production companies according to Wikipedia are Universal Pictures
 (WarnerMedia), Walt Disney Pictures (Walt Disney Studios), Columbia
 Pictures (Sony Pictures) (in the format Major film studio unit (Studio
 parent) from
-<https://en.wikipedia.org/wiki/Major_film_studio#Present_2>).
+<https://en.wikipedia.org/wiki/Major_film_studio#Present_2>)
 
-![](project_files/figure-gfm/bar-graph-production-companies-1.png)<!-- -->![](project_files/figure-gfm/bar-graph-production-companies-2.png)<!-- -->
+we got lionsgate, dreamworks, and twentieth century fox from a list at
+<https://reelrundown.com/film-industry/Top-10-Movie-Production-Companies>
+to add more major companies to our analysis (maybe look at website real
+quick to say why this is)
+
+and also pixar and marvel are notorious for having very popular,
+profitable movies (also with endgame coming out and skyrocketing to the
+top of popularity charts on imdb, tmdb, etc.) we added these as
+well
+
+![](project_files/figure-gfm/bar-graph-production-companies-1.png)<!-- -->
+
+Insert narrative interpreting the bar graph
 
 Simulating if production companies have cause a difference in median
 pratio:
@@ -252,6 +278,9 @@ Add narrative about confidence interval and p-value:
     ## #   spokenlength <int>, english <chr>, horror <chr>, action <chr>,
     ## #   few_words <chr>, holiday_release <chr>, likely_sequel <chr>,
     ## #   if_major <chr>, major_productionco <chr>, tag_length <int>
+
+either explain this or get rid of it tbh (but we do need something to be
+eliminated from our linear model later on so maybe its worth it)
 
 ### Making a preliminary linear model
 
@@ -471,7 +500,21 @@ budget, ETC TYPE THE REST HERE are the best predictors of profitability.
     ## [1] 0.04291985
 
 Our R-squared value of 0.0429198 for our final selected model indicates
-that 4.2919848% of the variation in Profitability can be well-explained
-by a linear relationship with INSERT LIST HERE
+that 4.2919848% of the variation in profitability ratio can be
+well-explained by a linear relationship with INSERT LIST HERE
+
+### A quick look at budget vs revenue
+
+    ## # A tibble: 2 x 2
+    ##   term         estimate
+    ##   <chr>           <dbl>
+    ## 1 (Intercept) 143491.  
+    ## 2 budget           2.98
+
+0.497329 explain this r squared
+
+![](project_files/figure-gfm/visualize-revenue-model-1.png)<!-- -->
+
+explain this visualization
 
 ### Conclusion
