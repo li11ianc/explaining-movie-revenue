@@ -12,6 +12,17 @@ end. The rest is up to you\!
 
 ### Introduction
 
+The movie industry is one that accounts for billions of dollars in
+revenue and forms the keystone of the entertainment sector;
+consequently, there are a wide variety of films that have had varying
+degrees of success in the market. There are a variety of characteristics
+and factors that make up a movie – budget, director, etc. – yet none of
+these factors alone seem to have the power to drive a successful film.
+Rather, a combination of positive factors must be achieved to dominate
+the market. In this project, we will be attempting to address the
+research question of what specific factors have the most effect in
+predicting the profitability of a film.
+
 ### Stuff
 
 For our dataset of 5000 movies, we decided to remove the variables id,
@@ -141,7 +152,7 @@ in median pratio.
     ## # A tibble: 1 x 2
     ##    lower upper
     ##    <dbl> <dbl>
-    ## 1 -0.297 0.365
+    ## 1 -0.274 0.381
 
 We found the p-value to be 0, thus it proved to be significantly
 significant, which we then could accept the null hypothesis that the
@@ -168,12 +179,12 @@ Add narrative about why we chose action:
     ## # A tibble: 1 x 1
     ##   pvalue
     ##    <dbl>
-    ## 1  0.072
+    ## 1  0.108
 
     ## # A tibble: 1 x 2
     ##    lower upper
     ##    <dbl> <dbl>
-    ## 1 -0.200 0.241
+    ## 1 -0.202 0.225
 
 Add narrative about p-value and confidence
     intervals:
@@ -195,7 +206,7 @@ Add narrative about p-value and confidence
     ## # A tibble: 1 x 1
     ##   pvalue
     ##    <dbl>
-    ## 1  0.012
+    ## 1  0.008
 
 ### Making a variable for holiday releases
 
@@ -251,7 +262,7 @@ Add what the null hypothesis is:
     ## # A tibble: 1 x 2
     ##    lower upper
     ##    <dbl> <dbl>
-    ## 1 -0.184 0.208
+    ## 1 -0.183 0.198
 
 Add narrative about confidence interval and p-value:
 

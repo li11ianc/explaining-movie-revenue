@@ -1,0 +1,43 @@
+---
+title: "Statistical Playground"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r basic-setup}
+library(tidyverse)
+library(infer)
+```
+
+```{r load-data}
+movies <- read_csv("/cloud/project/data/tmdb_5000_movies.csv")
+```
+
+
+
+```{r glimpse}
+movies <- movies %>%
+  filter(original_language == "en")
+glimpse(movies)
+```
+
+```{r data-wrangling}
+movies <- movies %>%
+  filter(budget != 0 & revenue != 0) %>%
+  mutate(logbudget = log(budget))
+movies %>%
+  ggplot(mapping = aes(x = logbudget)) +
+  geom_histogram(color = "blue") +
+  labs(title = "Distribution of Movie Budgets", subtitle = "Excluding movies with zero budget",
+       x = "Log(Budget in Dollars)",y = "Number of Movies") 
+```
+
+```{r movie-budget-arrange}
+movies %>%
+  select(budget, logbudget, original_title) %>%
+  arrange(budget)
+```
+

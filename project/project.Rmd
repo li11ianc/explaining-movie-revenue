@@ -15,6 +15,8 @@ You can add sections as you see fit. Make sure you have a section called Introdu
 
 ### Introduction
 
+The movie industry is one that accounts for billions of dollars in revenue and forms the keystone of the entertainment sector; consequently, there are a wide variety of films that have had varying degrees of success in the market. There are a variety of characteristics and factors that make up a movie – budget, director, etc. – yet none of these factors alone seem to have the power to drive a successful film. Rather, a combination of positive factors must be achieved to dominate the market. In this project, we will be attempting to address the research question of what specific factors have the most effect in predicting the profitability of a film. 
+
 ### Stuff
 
 ```{r load-data, message=FALSE}
@@ -83,6 +85,7 @@ movies <- movies %>%
 To find the 95% confidence interval of pratio:
 
 ```{r}
+set.seed(5000)
 boot_dist <- movies %>%
   specify(response = "pratio") %>%
   generate(reps = 1000, type = "bootstrap") %>%
@@ -150,6 +153,7 @@ We then tested the question: Does this data provide convincing evidence of a dif
 Null Hypothesis: The movie being a horror movie does cause a difference in median pratio.
 
 ```{r}
+set.seed(5000)
 sampmedian_diff <- movies %>%
   group_by(horror) %>%
   summarise(samp_median = median(pratio)) %>%
@@ -170,8 +174,8 @@ ggplot(data = null_dist, aes(x = stat)) +
   labs(title = "Null distribution of differences in medians")
 
 null_dist %>%
-  filter(stat <= -sampmedian_diff ) %>%
-  summarise(pvalue = 2 *(n() / 1000))
+  filter(stat <= -sampmedian_diff | stat >= sampmedian_diff ) %>%
+  summarise(pvalue = (n() / 1000))
 
 null_dist %>%
   summarise(
@@ -182,7 +186,7 @@ null_dist %>%
 
 We found the p-value to be 0, thus it proved to be significantly significant, which we then could accept the null hypothesis that the movie being of a horror genre does affect median pratio. 
 
-Add narrative about confidence interval. 
+Add narrative about confidence interval.
 
 ```{r}
 horror_only <- movies %>%
@@ -221,7 +225,7 @@ movies %>%
 
 
 ```{r}
-
+set.seed(5000)
 sampmedian_diff <- movies %>%
   group_by(action) %>%
   summarise(samp_median = median(pratio)) %>%
@@ -232,7 +236,7 @@ sampmedian_diff
 null_dist <- movies %>%
   specify(response = pratio, explanatory = action) %>%
   hypothesize(null = "independence") %>%
-  generate(reps = 1000, type = "permute") %>%
+  generate(reps = 2000, type = "permute") %>%
   calculate(stat = "diff in medians", order = c("yes", "no"))
 
 ggplot(data = null_dist, aes(x = stat)) +
@@ -300,6 +304,7 @@ sample_stat
 ```
 
 ```{r title-null-distr}
+set.seed(5000)
 null_distr <- movies %>%
   specify(response = pratio, explanatory = few_words) %>%
   hypothesize(null = "independence") %>%
@@ -465,6 +470,7 @@ sampmedian_diff
 ```
 
 ```{r}
+set.seed(5000)
 null_dist <- movies %>%
   specify(response = pratio, explanatory = if_major) %>%
   hypothesize(null = "independence") %>%
