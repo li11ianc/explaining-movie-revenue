@@ -319,9 +319,16 @@ The next factor we’ll be examining is the title of a movie with specific atten
 ```{r words-pratio}
 movies <- movies %>%
   mutate(few_words = ifelse(sapply(strsplit(title, " "), length) <= 3, "no", "yes")) 
+temp_title <- movies %>%
+  group_by(few_words) %>%
+  summarise(med_pratio = median(pratio)) %>%
+  ungroup()
   
-ggplot(movies, mapping = aes(few_words, pratio)) +
-  geom_bar(stat="identity")
+ggplot(temp_title, mapping = aes(few_words, med_pratio)) +
+  geom_bar(stat="identity") +
+  labs(title = "Median Profitability Ratios of Movies With Longer and Shorter Titles",
+       x = "3 Words or Less?",
+       y = "Median Profitability Ratio")
 ```
 
 ```{r title-test}
