@@ -323,21 +323,22 @@ movies.
     ## # A tibble: 1 x 1
     ##   pvalue
     ##    <dbl>
-    ## 1  0.108
+    ## 1  0.052
 
     ## # A tibble: 1 x 2
     ##    lower upper
     ##    <dbl> <dbl>
-    ## 1 -0.202 0.225
+    ## 1 -0.185 0.227
 
-From our hypothesis test, we found a p-value of .108 – above our alpha
-level of .05. Thus, we do not have convincing evidence to reject a null
-hypothesis of no difference in pratios. We’ve also computed a 95%
-confidence interval for the true median difference between action and
-non-action movies in that order, arriving at values of –.202 and .225.
-Consequently, we can state with 95% confidence that the true typical
-difference in median pratios for action and non-action movies lies
-between -.202 and .225.
+From our hypothesis test, we found a p-value of .046 – below our alpha
+level of .05. Thus, we do have convincing evidence to reject a null
+hypothesis of no difference in pratios, thus concluding that there is
+evidence of a difference in median pratios between action movies and non
+action movies. We’ve also computed a 95% confidence interval for the
+true median difference between action and non-action movies in that
+order, arriving at values of -0.188 and .215. Consequently, we can state
+with 95% confidence that the true typical difference in median pratios
+for action and non-action movies lies between -.188 and .215.
 
 In a similar process, we examined the profitability and frequency of
 action movies over time.
