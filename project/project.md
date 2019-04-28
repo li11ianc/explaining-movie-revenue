@@ -1,14 +1,7 @@
-PROJECT TITLE
+Hollywood Big-Bucks
 ================
 Zuck(R)berg
 25 April 2019
-
-Your project goes here\! Before you submit, make sure your chunks are
-turned off with `echo = FALSE`.
-
-You can add sections as you see fit. Make sure you have a section called
-Introduction at the beginning and a section called Conclusion at the
-end. The rest is up to you\!
 
 ### Introduction
 
@@ -25,17 +18,33 @@ predicting the profitability of a film.
 
 ### Stuff
 
-For our dataset of 5000 movies, we decided to remove the variables id,
-homepage, and original\_title, since we felt that these variables did
-not contribute to our research question of what contributed to a
-“successful” movie. Additionally, since we found problems with the
-budget and revenue variables of non-American movies (not in US dollars),
-we decided to filter for only english movies as a proxy for American
-movies. (Since there is no definite way to filter for only American
-movies). We also filtered for movies that had a budget and revenue that
-were nonzero, this is so that our data would not be skewed by movies
-that were not intended to draw revenue or were not of the same budget
-caliber of the rest of the films.
+In order to conduct our analysis, we will be using a dataset from Kaggle
+known as the “TMBD 5000 Movie Dataset”. This dataset is a collection of
+5000 movies and various characteristics, including budget, revenue, the
+spoken language of the film, and various other traits.
+
+There are a few variables we will remove from the dataset, as they
+aren’t particularly useful for our analysis; among them are “id”,
+“homepage”, and “original\_title”, as these variables are not related
+to the films themselves but serve only to identify the movies within a
+database.
+
+Furthermore, we have filtered the original dataset for only movies whose
+original\_language is listed as Engish. While this does cut out a
+significant portion of the dataset, it was necessary due to a problem we
+encountered with the budget and revenue variables – they weren’t all in
+USD. While an English filter isn’t a perfect discriminator for American
+currency values, it serves as a useful proxy and reduces the currency
+discrepancy to a level that is statistically insignificant.
+
+We have also filtered out movies that have values of zero for budget
+and/or revenue. As our analysis focuses on how movies become successful,
+we felt that movies with zero values were not seriously seeking
+financial success, and consequently may skew our results since the films
+were not designed to draw profits.
+
+Here is a visualization of the distribution of the “popularity” variable
+as well as its top 10 observations within the dataset.
 
 ![](project_files/figure-gfm/popularity-explanations-1.png)<!-- -->
 
@@ -53,8 +62,29 @@ caliber of the rest of the films.
     ##  9 The Hunger Games: Mockingjay - Part 1                        206.
     ## 10 Big Hero 6                                                   204.
 
-We are going to not look at popularity because we can’t figure out where
-this came from,,, etc explain this.
+The “popularity” variable is another that we have decided to omit; as
+you can see based on the above visualization and an ordered list of the
+top 10 movies by “popularity”, there are a number of irregularities with
+the variable. Firstly, popularity itself is not clearly defined by the
+creators of the dataset, and consequently it is difficult to form any
+useful statistical conclusion from its analysis. Furthermore, the
+distribution of popular movies is odd, with a huge number of upper
+outliers and significant right-skew. Finally, the intuitive definitions
+of popularity – number of viewings, number of people that have seen the
+film, or otherwise – are not apparent in the above top 10 list of
+“popular” movies. While Minions and Interstellar are certainly
+well-known films, they pale in comparison to more well-known movies that
+actually don’t appear on this list at all. If one conducts a search for
+“most popular movies”, the list that appears does not share a single
+entry in common with the above 10 terms. Due to these strange findings,
+popularity will also be omitted from our analysis.
+
+At first, we hypothesized that budget would be the strongest indicator
+of success; intuitively, companies that can afford to invest hundreds of
+millions of dollars into a film are unlikely to lack the expertise to
+profit from their creation. Out of a combination of this sentiment and
+general curiosity, we compiled a list of the top 10 movies arranged by
+budget.
 
     ## # A tibble: 10 x 2
     ##    title                                          budget
@@ -85,42 +115,112 @@ this came from,,, etc explain this.
     ## 10 "[{\"name\": \"DC Comics\", \"id\": 429}, {\"name\": \"Atlas Entertainm…
     ## # … with 2,506 more rows
 
+The results were actually quite surprising; around half of the films on
+the list received significant negative press coverage and failed to meet
+revenue expectations for movies of their caliber. At this point, we
+became intrigued – what factors did these high budget movies lack that
+might have improved their box office performance?
+
+    ## # A tibble: 2,516 x 1
+    ##    production_companies                                                    
+    ##    <chr>                                                                   
+    ##  1 "[{\"name\": \"Ingenious Film Partners\", \"id\": 289}, {\"name\": \"Tw…
+    ##  2 "[{\"name\": \"Walt Disney Pictures\", \"id\": 2}, {\"name\": \"Jerry B…
+    ##  3 "[{\"name\": \"Columbia Pictures\", \"id\": 5}, {\"name\": \"Danjaq\", …
+    ##  4 "[{\"name\": \"Legendary Pictures\", \"id\": 923}, {\"name\": \"Warner …
+    ##  5 "[{\"name\": \"Walt Disney Pictures\", \"id\": 2}]"                     
+    ##  6 "[{\"name\": \"Columbia Pictures\", \"id\": 5}, {\"name\": \"Laura Zisk…
+    ##  7 "[{\"name\": \"Walt Disney Pictures\", \"id\": 2}, {\"name\": \"Walt Di…
+    ##  8 "[{\"name\": \"Marvel Studios\", \"id\": 420}, {\"name\": \"Prime Focus…
+    ##  9 "[{\"name\": \"Warner Bros.\", \"id\": 6194}, {\"name\": \"Heyday Films…
+    ## 10 "[{\"name\": \"DC Comics\", \"id\": 429}, {\"name\": \"Atlas Entertainm…
+    ## # … with 2,506 more rows
+
+We also took a cursory look at some of the production companies listed
+in the dataset. Unsurprisingly, a large portion of the dataset’s movies
+were created by name-brand companies, a fact that suggests that
+financial resources must not have been the primary reason for the
+failure of many movies.
+
 ### Creating a “Profitability” Variables
 
-The first profitability variable is a ratio of revenue to budget, to
-show by what percentage a movie was “profitable.” This second
-profitability variable is a categorical variable that deciphers if the
-movie was profitable or not, based on the profitiability ratio. If the
-ratio was greater than 1, it was considered profitable. It will simply
-say “yes” for profitable, and “no” for non-profitable.
+In order to investigate the financial success of movies, we defined two
+variables which we will hereafter refer to as “profitability” variables.
+The first of these, pratio, is a ratio of revenue to budget that
+expresses the percentage by which a movie earns more or less than its
+budget. For example, a movie that has a revenue twice its budget will
+have a pratio of 2. This variable is numerical and continuous; to aid in
+our analysis, we’ve created a second, categorical variable called
+“profitable” that divides movies into two categories – profitable or
+not. If the pratio is greater than 1, the movie is profitable and
+displays an entry of “yes”. If not, then the observation is listed as
+“no”.
 
-To find the 95% confidence interval of pratio:
+Initially, the pratio variable displayed summary statistics that were
+entirely unreasonable – a mean pratio of over one hundred, for example –
+and we discovered the cause quickly; some movies listed their budgets in
+units of one million dollars while their revenues were recorded in
+simple USD. Consequently, their pratios were in the hundreds of
+thousands. In order to fix this, we did additional research and found
+that the highest true pratio in a movie belongs to “Paranormal Activity”
+with a value of around 200. Consequently, all values above 200 are
+data-entry errors and were filtered out. Fortunately, there are no
+erroneous entries below 200, as budget entry errors relating to the
+millions unit have a minimum effect on pratio of 6 orders of magnitude.
+
+In analyzing pratio, we will begin with a 95% confidence interval of the
+median pratios for films to get a general sense of where the median
+value might lie.
 
     ## # A tibble: 1 x 2
     ##   lower uppper
     ##   <dbl>  <dbl>
     ## 1  2.20   2.39
 
-Insert narrative about confidence interval:
+The above values, 2.20 and 2.39, allow me to state with 95% confidence
+that the true median pratio for movies lies between 2.20 and 2.39. This
+conclusion is surprising; one would intuitively expect a majority, or at
+least sizeable minority, of movies to achieve break-even status or less.
+Rather, the confidence interval establishes that, with 95% certainty,
+around half of movies – those greater than the median – have pratios in
+excess of 2.20 while¬¬¬ far less than half of movies fail to be
+profitable. Making a successful movie may be easier than we thought\!
 
-### Making a Categorical “spoken languages” Variable
+After the above glance at profitability in general, we’ve will now
+create a few more variables with which to analyze profitability and
+examine some different trends.
 
-Here, we will be creating a new vategorical variable, that signifies if
-the only language spoken in the film is english, or not. If the only
-spoken language is english, the value will be “yes,” if there are other
-languages spoken or english is not used, the value will be “no.”
+### Categorical Spoken English Variable
+
+Recall that we originally filtered the data for movies whose
+“original\_language” was English; there are a multitude of movies who
+still features spoken languages other than English. Consequently, we
+will be mutating a new variable, “english” which splits movies into two
+groups – those that are entirely spoken in English and those that
+features other languages. We will use this variable later in our
+analysis, but we hypothesize that English-only movies will earn higher
+revenues.
 
 ### Splitting date variable
 
-^^this code chunk should perhaps go somewhere else but insert quick
-narrative saying how we transformed dates from year-mo-da character form
-to numerical separate variables
+We will now wrangle the dates in the dataset for use in the next
+segment, a process which requires us to convery the dates in the data to
+a better form. The dates in the dataset originally came in character
+form as “yr-mo-day” form, but character format isn’t particularly useful
+for analyzing dates – rather, a numeric form is preferred. We split the
+character format into 3 parts and converted the values to 3 numeric
+variables as day, month, and year.
 
-### Genre trends
+### Genre Trends
 
-We wanted to explore how genre affects certain trends within the
-dataset. Thus we created a few genre related variables that we thought
-would yield the most effect.
+Now that we have a proper format for our dates, we can analyze another
+characteristic’s effect on profitability over time – genres. In order to
+create a genre variable, we used a string detect function that scans for
+“Horror” under a movie’s genres. We have decided to work with the
+“horror” genre specifically as we noticed that they generally have
+lower budgets than other types of films. See below a table that reflects
+the stark difference – non-horror movies seem to cost nearly twice as
+much.
 
     ## # A tibble: 2 x 2
     ##   horror `median(budget)`
@@ -128,17 +228,30 @@ would yield the most effect.
     ## 1 no             30000000
     ## 2 yes            14500000
 
-We chose the horror genre since we found that horror movies
-significantly have lower budgets, to see if horror movies then have
-higher pratios since they have less money to make to “break even” and
-make a profit. Also, some of the most profitable movies have been horror
-movies, such as Paranormal Activity, that had a very low budget.
+As a result, it’s easier for a horror movie to achieve a high pratio, a
+fact which is reflected in the movie with the highest pratio –
+Paranormal Activity with a value of nearly 200\! We formulated the
+following question in regard to horror movies.
 
-We then tested the question: Does this data provide convincing evidence
-of a difference in median pratios for horror vs non horror movies?
+Does this data provide convincing evidence of a difference in median
+pratios for horror vs non-horror movies?
 
-Null Hypothesis: The movie being a horror movie does cause a difference
-in median pratio.
+Null Hypothesis: A movie’s status as a horror film is independent of its
+pratio.
+
+Alternative Hypothesis: A movie’s status as a horror film is a
+dependency for its pratio.
+
+The below value is the sample median difference in pratios between
+horror and non-horror movies – at .5147, our sample’s horror movies had
+a 50% higher return on their budgets than in non-horror movies. In order
+to generalize, however, we must run a hypothesis test. Below is our
+generated null distribution for a difference in medians (horror –
+non-horror) with 1000 repetitions, as well as upper and lower bounds of
++/- .5147. By running a hypothesis test for independence with an alpha
+value of .05, we found a p-value of .004, a value which gives convincing
+evidence to reject the null hypothesis and conclude that horror movies
+have higher pratios.
 
     ## [1] 0.5147204
 
@@ -154,23 +267,54 @@ in median pratio.
     ##    <dbl> <dbl>
     ## 1 -0.274 0.381
 
-We found the p-value to be 0, thus it proved to be significantly
-significant, which we then could accept the null hypothesis that the
-movie being of a horror genre does affect median pratio.
+By running a hypothesis test for independence with an alpha value of
+.05, we found a p-value of .004, a value which gives convincing evidence
+to reject the null hypothesis and conclude that horror movies have
+higher pratios.
 
-Add narrative about confidence interval.
+We also ran a 95% confidence interval for the true median difference in
+pratio. The displayed interval, (-.274, .381). allows us to state with
+95% confidence that the true median difference in pratios between horror
+and non-horror movies, subtracting the latter from the former, is
+between -.274 and .381.
+
+Using our newly-created date values, we also wanted to track
+profitability of horror movies over time as well as the sheer number of
+horror movies created. Below are two visualizations: first, an
+examination of the profitability over time and secondly a glance at the
+number of horror movies created in each year.
 
 ![](project_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 ![](project_files/figure-gfm/horror-1.png)<!-- -->
 
-Add narrative about why we chose action:
+The relationship between these two graphs is interesting, as they seem
+to mirror each other to a certain extent. Observe two main similarities.
+Firstly, they are both bimodal with modes appearing around the 1990s and
+2010s, although the second graph’s first “mode” is dwarfed by the 2010s
+mode in a way that doesn’t apply to the first graph. Secondly, they both
+experience low values at the same time; these two observations can be
+well-explained by an economic theory. Simply put, the more profitable
+that producing a movie is, the more movies that will be created.
+
+The next genre that we’ll examine is action, a genre that we chose for
+its antithetical nature to horror. Action budgets seem to be
+extraordinarily large in comparison to other genres, as shown by the
+below chart.
 
     ## # A tibble: 2 x 2
     ##   action `median(budget)`
     ##   <chr>             <dbl>
     ## 1 no             21000000
     ## 2 yes            50000000
+
+Action movies have a median budget of more than twice that of other
+movies’ median budget. We’ve also gone ahead and calculated a sample
+difference of pratios between action and non-action movies (in that
+order) for our sample – a value of -.223. In a very similar procedure to
+the horror movies, we’ve created a null distribution of 2000 values of
+the differences in median pratio between action movies and non-action
+movies.
 
     ## [1] -0.2232571
 
@@ -186,14 +330,33 @@ Add narrative about why we chose action:
     ##    <dbl> <dbl>
     ## 1 -0.202 0.225
 
-Add narrative about p-value and confidence
-    intervals:
+From our hypothesis test, we found a p-value of .108 – above our alpha
+level of .05. Thus, we do not have convincing evidence to reject a null
+hypothesis of no difference in pratios. We’ve also computed a 95%
+confidence interval for the true median difference between action and
+non-action movies in that order, arriving at values of –.202 and .225.
+Consequently, we can state with 95% confidence that the true typical
+difference in median pratios for action and non-action movies lies
+between -.202 and .225.
+
+In a similar process, we examined the profitability and frequency of
+action movies over time.
 
 ![](project_files/figure-gfm/action-1.png)<!-- -->
 
 ![](project_files/figure-gfm/action-count-1.png)<!-- -->
 
+Again, the plots look very similar, but rather than sharing key points
+as the horror movies did, the action genre’s plots share a steady upward
+trend beginning in the 1990s. Again, profitability may be driving more
+movies to be created out of economic incentivization.
+
 ### Title and Profitability
+
+The next factor we’ll be examining is the title of a movie with specific
+attention to the length of the title. Intuition isn’t much use here;
+longer titles and shorter titles seem equally likely to garner
+    revenue
 
 ![](project_files/figure-gfm/words-pratio-1.png)<!-- -->
 
@@ -208,90 +371,118 @@ Add narrative about p-value and confidence
     ##    <dbl>
     ## 1  0.008
 
+After analyzing title length, we’re going to create a few more variables
+in preparation for our linear model. Specifically, we will create below
+the variables for holiday release, sequels, major production company
+status, and tagline length.
+
 ### Making a variable for holiday releases
 
-this is explained in the comments but those wont show in final form so
-insert narrative about what we consider a holiday and why we wanted to
-investigate this (a lot of people go to movies around the holidays, etc)
+Holiday releases – releasing on Halloween, Christmas, and other major
+festivities – might gather more revenues, due to the greater amount of
+disposable income being spent on these days. In order to create a
+categorical variable for holiday release, we filtered for movies
+released on dates on or directly around specific holidays and holiday
+periods. This variable is categorical and returns an answer of “yes” for
+holidays and “no” for non-holidays.
+
+We will use this variable later in a final linear model.
 
 ### Making a variable for likely sequels
 
-this basically sorts for titles that inlcude “:” or end with “2” or “3”
-to create a list of movies that are probably part of series (not a
-perfect variable just an approximation). we wanted to look at this
-because some sequels of really good movies flop etc. but a good first
-movie tends to motivate people to go see the next one
+We’ve also created a variable for likely sequels; the “likely” refers to
+the fact that our system for generating this variable relies on the most
+obvious indicators and will likely have both false negatives and false
+positives. However, the system is reliable enough for our purposes in
+this investigation. Essentially, we mutated likely\_sequel to return a
+“yes” response if a string detect detects a number in the movie’s
+title or a colon, both of which commonly appear in sequels. We suspect
+that a movie’s status as a sequel will decrease its revenue, since many
+believe that sequels tend to be worse than their predecessors. On the
+other hand, sequels draw additional revenue since fans of a prior movie
+will commit to seeing the new version.
 
 ### Making a variable for major production companies
 
-Major production companies according to Wikipedia are Universal Pictures
-(NBCUniversal), Paramount Pictures (Viacom), WarnerBros. Pictures
-(WarnerMedia), Walt Disney Pictures (Walt Disney Studios), Columbia
-Pictures (Sony Pictures) (in the format Major film studio unit (Studio
-parent) from
-<https://en.wikipedia.org/wiki/Major_film_studio#Present_2>)
+The next variable that we’ve created is “if\_major”, which expresses
+whether a given movie is a created by a major production company. We’ve
+determined which studios are “major” based on some outside research; the
+list of major producers includes Universal Pictures, Paramount Pictures,
+WarnerBros. Pictures, Walt Disney Pictures, Columbia Pictures,
+Lionsgate, Dreamworks, Twentieth Century Fox, Pixar, and Marvel. In
+order to create this variable, we used a sequence of str\_detect
+functions and converted their results with a case\_when function.
 
-we got lionsgate, dreamworks, and twentieth century fox from a list at
-<https://reelrundown.com/film-industry/Top-10-Movie-Production-Companies>
-to add more major companies to our analysis (maybe look at website real
-quick to say why this is)
-
-and also pixar and marvel are notorious for having very popular,
-profitable movies (also with endgame coming out and skyrocketing to the
-top of popularity charts on imdb, tmdb, etc.) we added these as
-well
+Below is a visualization of the median pratio for each of the listed
+studios.
 
 ![](project_files/figure-gfm/bar-graph-production-companies-1.png)<!-- -->
 
-Insert narrative interpreting the bar graph
+Interestingly, the medians tend to be lower than we predicted; assuming
+that greater budget leads to greater revenue, these major producers
+should be achieving maximum profitability, which they clearly do not
+with the exception of Pixar, who outperforms the other companies by two
+to three times as much profitability. In order to be certain about major
+companies as a whole, however, we ran a hypothesis test below.
 
-Simulating if production companies have cause a difference in median
-pratio:
-
-Add what the null hypothesis is:
+First, we computed our sample difference on which to base the test – we
+found a median difference of .633 between major and non-major production
+companies in our sample.
 
     ## [1] 0.6328664
+
+Now, we will establish a null and alternative hypothesis.
+
+Null: There is no difference in pratio based on a relationship with
+major and non-major production companies.
+
+Alternative: There is a difference in pratio based on a relationship
+with major and non-major production companies.
 
 ![](project_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
     ## # A tibble: 1 x 1
     ##   pvalue
     ##    <dbl>
-    ## 1      2
+    ## 1      0
 
     ## # A tibble: 1 x 2
     ##    lower upper
     ##    <dbl> <dbl>
     ## 1 -0.183 0.198
 
-Add narrative about confidence interval and p-value:
+Generating a null distribution of 1000 values and applying our sample
+statistic bounds, we find a p-value of zero, suggesting that there is
+convincing evidence that there is a difference in pratio between major
+and non-major production companies. Furthermore, based on the above
+values for a 95% confidence interval, we can state with 95% confidence
+that the true difference in median pratio between major and non-major
+produced movies is between -.183 and .198.
 
 ### Making a variable for tagline length
 
-    ## # A tibble: 3,086 x 31
-    ##    budget genres keywords original_langua… overview popularity
-    ##     <dbl> <chr>  <chr>    <chr>            <chr>         <dbl>
-    ##  1 2.37e8 "[{\"… "[{\"id… en               In the …      150. 
-    ##  2 3.00e8 "[{\"… "[{\"id… en               Captain…      139. 
-    ##  3 2.45e8 "[{\"… "[{\"id… en               A crypt…      107. 
-    ##  4 2.50e8 "[{\"… "[{\"id… en               Followi…      112. 
-    ##  5 2.60e8 "[{\"… "[{\"id… en               John Ca…       43.9
-    ##  6 2.58e8 "[{\"… "[{\"id… en               The see…      116. 
-    ##  7 2.60e8 "[{\"… "[{\"id… en               When th…       48.7
-    ##  8 2.80e8 "[{\"… "[{\"id… en               When To…      134. 
-    ##  9 2.50e8 "[{\"… "[{\"id… en               As Harr…       98.9
-    ## 10 2.50e8 "[{\"… "[{\"id… en               Fearing…      156. 
-    ## # … with 3,076 more rows, and 25 more variables:
-    ## #   production_companies <chr>, production_countries <chr>, year <dbl>,
-    ## #   month <dbl>, day <dbl>, revenue <dbl>, runtime <dbl>,
-    ## #   spoken_languages <chr>, status <chr>, tagline <chr>, title <chr>,
-    ## #   vote_average <dbl>, vote_count <dbl>, pratio <dbl>, profit <chr>,
-    ## #   spokenlength <int>, english <chr>, horror <chr>, action <chr>,
-    ## #   few_words <chr>, holiday_release <chr>, likely_sequel <chr>,
-    ## #   if_major <chr>, major_productionco <chr>, tag_length <int>
+The next variable we’ve created is tagline length – this is a simple
+measurement of the character length of the movie’s tagline or
+“promotional statement” generally attached to the movie’s promotional
+materials.
 
-either explain this or get rid of it tbh (but we do need something to be
-eliminated from our linear model later on so maybe its worth it)
+    ## # A tibble: 10 x 1
+    ##    tagline                                       
+    ##    <chr>                                         
+    ##  1 Enter the World of Pandora.                   
+    ##  2 At the end of the world, the adventure begins.
+    ##  3 A Plan No One Escapes                         
+    ##  4 The Legend Ends                               
+    ##  5 Lost in our world, found in another.          
+    ##  6 The battle within.                            
+    ##  7 They're taking adventure to new lengths.      
+    ##  8 A New Age Has Come.                           
+    ##  9 Dark Secrets Revealed                         
+    ## 10 Justice or revenge
+
+Here are a few examples of movie taglines. We have applied a str\_length
+function to each tagline to form our tagline length variable
+“tag\_length”.
 
 ### Making a preliminary linear model
 
@@ -299,31 +490,18 @@ We aim to find an ideal linear model to predict profitability ratio
 based on a variety of factors; before constructing our model, we will
 remove observations that lack values for these factors.
 
-    ## # A tibble: 3,086 x 31
-    ##    budget genres keywords original_langua… overview popularity
-    ##     <dbl> <chr>  <chr>    <chr>            <chr>         <dbl>
-    ##  1 2.37e8 "[{\"… "[{\"id… en               In the …      150. 
-    ##  2 3.00e8 "[{\"… "[{\"id… en               Captain…      139. 
-    ##  3 2.45e8 "[{\"… "[{\"id… en               A crypt…      107. 
-    ##  4 2.50e8 "[{\"… "[{\"id… en               Followi…      112. 
-    ##  5 2.60e8 "[{\"… "[{\"id… en               John Ca…       43.9
-    ##  6 2.58e8 "[{\"… "[{\"id… en               The see…      116. 
-    ##  7 2.60e8 "[{\"… "[{\"id… en               When th…       48.7
-    ##  8 2.80e8 "[{\"… "[{\"id… en               When To…      134. 
-    ##  9 2.50e8 "[{\"… "[{\"id… en               As Harr…       98.9
-    ## 10 2.50e8 "[{\"… "[{\"id… en               Fearing…      156. 
-    ## # … with 3,076 more rows, and 25 more variables:
-    ## #   production_companies <chr>, production_countries <chr>, year <dbl>,
-    ## #   month <dbl>, day <dbl>, revenue <dbl>, runtime <dbl>,
-    ## #   spoken_languages <chr>, status <chr>, tagline <chr>, title <chr>,
-    ## #   vote_average <dbl>, vote_count <dbl>, pratio <dbl>, profit <chr>,
-    ## #   spokenlength <int>, english <chr>, horror <chr>, action <chr>,
-    ## #   few_words <chr>, holiday_release <chr>, likely_sequel <chr>,
-    ## #   if_major <chr>, major_productionco <chr>, tag_length <int>
+Now that we’ve created all of our variables, we can begin to create a
+linear model to try and predict profitability. First, we have removed
+all NA values for the variables under consideration, although this step
+is not shown. The only NA values in the dataset were present exclusively
+in the new tagline variable, however.
 
-We filter the dataset to remove movies with NA values so that our
-backwards model selection will work (the only NAs in the values we are
-considering are for tagline length)
+Below, we’ve fitted an initial linear model which takes into account all
+of the variables previously mentioned as well as a few interactions:
+budget and if\_major, due to the clear relationship between being a
+major company and having access to a large budget, and budget \*
+likely\_sequel, due to the funding relationship that a movie might have
+with a successful predecessor.
 
     ## 
     ## Call:
@@ -373,17 +551,6 @@ considering are for tagline length)
     ## 10 major_productioncolionsgate  -1.16        
     ## # … with 12 more rows
 
-We fit a regression model to predict pulse rate based on
-holiday\_release, likely\_sequel, budget, if\_major,
-major\_productionco, tag\_length, english, runtime, action, horror,
-few\_words, the interaction between budget and likely\_sequel, and the
-interaction between budget and if\_major. We chose to examine the those
-interactions because whether a movie is a sequel (and thus has a known
-revenue for its precedents and some expectation that people will see it)
-may be related to its budget and also the relation between budget and
-having access to the resources we assume accompany a major production
-company may also be related in an interesting way.
-
 Linear Model:
 
 Profitability Ratio = 2.9202948 + -1.1415792(Holiday Release) +
@@ -402,9 +569,11 @@ Language English) + 0.0314541(Runtime) + -0.6916269(Action) +
     ## 1    0.0481        0.0411  9.81      6.86 8.86e-20    22 -10634. 21313.
     ## # … with 3 more variables: BIC <dbl>, deviance <dbl>, df.residual <int>
 
-We compute the adjusted R-squared value for the filtered model for pulse
-as 0.0410583; this is a helpful measure of the goodness of the fit of
-the model.
+We compute the adjusted R-squared value for the model as 0.0410583; this
+is a helpful measure of the goodness of the fit of the model.
+
+Below, we have performed backwards selection on our preliminary model
+and arrive at an optimal model.
 
     ## Start:  AIC=13152.26
     ## pratio ~ holiday_release + likely_sequel + budget + if_major + 
@@ -487,9 +656,9 @@ the model.
     ## 10 budget:if_majoryes       0.0000000246
     ## 11 likely_sequelyes:budget  0.0000000321
 
-We perform backwards model selection based on AIC, Akaike Information
-Criterion (another measure of the fit of a model), and obtain the best
-fit.
+We performed backwards selection based on AIC. Consequently, our
+selected model has a lower AIC value than the preliminary model - a fact
+which shows that the selected model is a better fit.
 
 Selected Linear Model:
 
@@ -500,21 +669,26 @@ Production Company) + 0.691595(Spoken Language English) +
 -1.1593277(One Word Title) + 2.4821382(Budget \* Major Production
 Company) + 1.6528298(Likely Sequel \* Budget)
 
+Below is a comparison of the preliminary model’s AIC compared to the
+selected model’s AIC. Note that the lower value accompanies the selected
+model.
+
     ## [1] 21313.16
 
     ## [1] 21306.65
-
-Our AIC value decreases for the selected model, which indicates that it
-is a better fit. Thus factors of holiday\_release, likely\_sequel,
-budget, ETC TYPE THE REST HERE are the best predictors of profitability.
 
     ## [1] 0.04291985
 
 Our R-squared value of 0.0429198 for our final selected model indicates
 that 4.2919848% of the variation in profitability ratio can be
-well-explained by a linear relationship with INSERT LIST HERE
+well-explained by a linear relationship with the selected variables.
 
 ### A quick look at budget vs revenue
+
+As a final visualization and analysis, we looked at the relationship
+between budget and revenue. We created a single variable linear
+regression with budget as the explanatory variable, which led to an
+equation based on the values below
 
     ## # A tibble: 2 x 2
     ##   term         estimate
@@ -522,10 +696,71 @@ well-explained by a linear relationship with INSERT LIST HERE
     ## 1 (Intercept) 143491.  
     ## 2 budget           2.98
 
-0.497329 explain this r squared
+Regression: Revenue = 143491 + 2.98(budget)
+
+The above equation nets an R-Squared value of 0.497329, implying that
+approximately 49.73% of the linear variation in revenue can be
+well-explained by a linear relationship with budget.
 
 ![](project_files/figure-gfm/visualize-revenue-model-1.png)<!-- -->
 
-explain this visualization
+In this final visualization, we have colored data points by whether they
+were created by a major company or not and colored it accordingly. Note
+that the slope of the major companies’ regression line is steeper, and
+the data points tend to be placed further to the right and up due to the
+greater resources of larger companies. All of the highest budgeted
+movies were created by major companies.
 
 ### Conclusion
+
+Our final R-Squared value of only around .04 is dissapointing predictive
+power on the part of our final model, but there are a few issues with
+our analysis that we believe may be lowering this value. Firstly, the
+dataset has a few key issues.
+
+There are data entry errors and inconsistencies. Specifically, as we
+have discussed prior, certain budgets are underestimated by six orders
+of magnitude. These irregular data points can wreak havoc on any sort of
+linear relationship between budget and other variables. While we’ve
+removed the most egregious offenders, there may still be examples of
+budgets underestimated by 3 or less orders of magnitude that can lower
+our R-Squared value.
+
+The other broad category of data error is the currency issue noted
+previously. Again, while filtering for English as the original language
+is helpful in this regard, some of the entries still possess non-USD
+entries for budget and revenue. Since the data does not include units,
+there is no absolutely effective method of discriminating for the type
+of currency used other than manually checking all 5000 movies.
+
+Inflation may also play a part in our strange findings; some values have
+been adjusted for inflation while others have not. Furthermore, the
+inflation adjustments might be made using different “base years” for
+certain observations. Consequently, the linear relationship can be
+comfounded and muddled by the effects of inflation on the data.
+
+Even with a fairly low R-Squared value, we can still draw some
+interesting conclusions about the data and apply our findings to the
+real world. Firstly, budget is not an exclusive gatekeeper to a
+successful film; any combination of enough of the other preferential
+traits we have analyzed can create success, even in spite of a low
+budget. We see this truth as well as its contrafactual with a simple
+glance at two films: Pirates of the Caribbean: On Stranger Tides and
+Paranormal Activity. The former failed under the influence of the
+highest budget while the latter is the most profitable movie of all time
+by percentage with a budget less than $100,000.
+
+With specific reference to our investigation question of what factors
+make a movie profitable, we have seen firsthand the difficulty of
+predicting the success of a movie; this isn’t surprising when one
+considers that there are still movies being made today that consider all
+of the above variables, but still fail. The variables we have selected
+play a small, but important role in a movie’s success. Even with an
+R-Squared value of only .04 and consequent well-explained linear
+relationship, a 4% difference in pratio can account for millions or tens
+of millions of dollars. The most valuable information that we have found
+may not come in the form of what companies need to focus on, but rather
+the factors on which they should avoid wasting resources - taglines, for
+example. As we’ve seen with the horror genre, every reduction of cost -
+cutting out unncecessary factors - increases the potential for very high
+profitability ratios.
