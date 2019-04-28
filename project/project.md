@@ -355,12 +355,31 @@ movies to be created out of economic incentivization.
 
 The next factor we’ll be examining is the title of a movie with specific
 attention to the length of the title. Intuition isn’t much use here;
-longer titles and shorter titles seem equally likely to garner
-    revenue
+longer titles and shorter titles seem equally likely to garner revenue.
+In order to get a general idea of how title length might affect the
+pratio, we will examine the medians for long and short movie titles.
 
 ![](project_files/figure-gfm/words-pratio-1.png)<!-- -->
 
+Interestingly, there does appear to be a greater pratio for films with a
+title of three words or less\! Below, we’ve calculated the exact
+difference in our sample to be a difference in medians of approximately
+.36. In order to generalize our results, however, we must conduct a
+hypothesis test.
+
     ## [1] 0.3637289
+
+We will conduct a hypothesis test for independence with the following
+null hypothesis.
+
+Null Hypothesis: Pratio is independent of title length.
+
+Alternative Hypothesis: Pratio is dependent on title length.
+
+Using the sample median above, we will create a null distribution of the
+difference in medians (“yes” - “no”) with 1000 repetitions and a
+permutation simulation
+    type.
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
@@ -371,12 +390,17 @@ longer titles and shorter titles seem equally likely to garner
     ##    <dbl>
     ## 1  0.008
 
+By using our sample median difference and applying its bounds to the
+null distribution, we arrive at a p-value of .008, which is below the
+alpha level and offers convincing evidence for us to reject the null
+hypothesis and conclude that pratio is dependent on title length.
+
 After analyzing title length, we’re going to create a few more variables
 in preparation for our linear model. Specifically, we will create below
 the variables for holiday release, sequels, major production company
 status, and tagline length.
 
-### Making a variable for holiday releases
+### Holiday Releases
 
 Holiday releases – releasing on Halloween, Christmas, and other major
 festivities – might gather more revenues, due to the greater amount of
