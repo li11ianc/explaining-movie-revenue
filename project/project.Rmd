@@ -8,11 +8,12 @@ output: github_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
+
 ### Introduction
 
 The movie industry is one that accounts for billions of dollars in revenue and forms the keystone of the entertainment sector; consequently, there are a wide variety of films that have had varying degrees of success in the market. There are a variety of characteristics and factors that make up a movie – budget, director, etc. – yet none of these factors alone seem to have the power to drive a successful film. Rather, a combination of positive factors must be achieved to dominate the market. In this project, we will be attempting to address the research question of what specific factors have the most effect in predicting the profitability of a film. 
 
-### Stuff
+### Beginning Steps
 
 In order to conduct our analysis, we will be using a dataset from Kaggle known as the “TMBD 5000 Movie Dataset”. This dataset is a collection of 5000 movies and various characteristics, including budget, revenue, the spoken language of the film, and various other traits. 
 
@@ -46,7 +47,8 @@ Here is a visualization of the distribution of the "popularity" variable as well
 
 ```{r popularity-explanations}
 ggplot(data = movies, aes(y = popularity)) +
-  geom_boxplot()
+  geom_boxplot() +
+  labs(title = "Distribution of Popularity Score", x = "", y = "Popularity Score")
 
 movies %>%
   select(title, popularity) %>%
@@ -76,11 +78,11 @@ movies %>%
 
 We also took a cursory look at some of the production companies listed in the dataset. Unsurprisingly, a large portion of the dataset’s movies were created by name-brand companies, a fact that suggests that financial resources must not have been the primary reason for the failure of many movies. 
 
-### Creating a "Profitability" Variables
+### Creating "Profitability" Variables
 
 In order to investigate the financial success of movies, we defined two variables which we will hereafter refer to as “profitability” variables. The first of these, pratio, is a ratio of revenue to budget that expresses the percentage by which a movie earns more or less than its budget. For example, a movie that has a revenue twice its budget will have a pratio of 2. This variable is numerical and continuous; to aid in our analysis, we’ve created a second, categorical variable called “profitable” that divides movies into two categories – profitable or not. If the pratio is greater than 1, the movie is profitable and displays an entry of “yes”. If not, then the observation is listed as “no”. 
 
-```{r}
+```{r profit-variable}
 movies <- movies %>% 
   mutate(pratio = revenue/budget) 
 movies <- movies %>%
@@ -98,7 +100,7 @@ Initially, the pratio variable displayed summary statistics that were entirely u
 
 In analyzing pratio, we will begin with a 95% confidence interval of the median pratios for films to get a general sense of where the median value might lie.
 
-```{r}
+```{r confinterva-pratio}
 set.seed(5000)
 boot_dist <- movies %>%
   specify(response = "pratio") %>%
@@ -157,7 +159,7 @@ movies <- movies %>%
   mutate(horror = ifelse(str_detect(genres, "Horror"), "yes", "no"))
 ```
 
-```{r}
+```{r horror-medians}
 movies %>%
   group_by(horror) %>%
   summarise(median(budget))
@@ -173,7 +175,7 @@ Alternative Hypothesis: A movie’s status as a horror film is a dependency for 
 
 The below value is the sample median difference in pratios between horror and non-horror movies – at .5147, our sample’s horror movies had a 50% higher return on their budgets than in non-horror movies. In order to generalize, however, we must run a hypothesis test. Below is our generated null distribution for a difference in medians (horror – non-horror) with 1000 repetitions, as well as upper and lower bounds of +/- .5147. By running a hypothesis test for independence with an alpha value of .05, we found a p-value of .004, a value which gives convincing evidence to reject the null hypothesis and conclude that horror movies have higher pratios.
 
-```{r}
+```{r hypotest-horror}
 set.seed(5000)
 sampmedian_diff <- movies %>%
   group_by(horror) %>%
@@ -211,7 +213,7 @@ We also ran a 95% confidence interval for the true median difference in pratio. 
 
 Using our newly-created date values, we also wanted to track profitability of horror movies over time as well as the sheer number of horror movies created. Below are two visualizations: first, an examination of the profitability over time and secondly a glance at the number of horror movies created in each year. 
 
-```{r}
+```{r profitability-horror}
 horror_only <- movies %>%
   filter(horror == "yes") %>%
   group_by(year) %>%
@@ -224,7 +226,7 @@ ggplot(horror_only, aes(year, m_pratio)) +
        y = "Median Profitability Ratio")
 ```
 
-```{r horror}
+```{r horror-frequency}
 horror_count <- horror_only %>%
   count(year)
 
@@ -239,7 +241,7 @@ The relationship between these two graphs is interesting, as they seem to mirror
 
 The next genre that we’ll examine is action, a genre that we chose for its antithetical nature to horror. Action budgets seem to be extraordinarily large in comparison to other genres, as shown by the below chart. 
 
-```{r}
+```{r action-variable}
 movies <- movies %>%
   mutate(action = ifelse(str_detect(genres, "Action"), "yes", "no"))
 movies %>%
@@ -249,7 +251,7 @@ movies %>%
 
 Action movies have a median budget of more than twice that of other movies’ median budget. We’ve also gone ahead and calculated a sample difference of pratios between action and non-action movies (in that order) for our sample – a value of -.223. In a very similar procedure to the horror movies, we’ve created a null distribution of 2000 values of the differences in median pratio between action movies and non-action movies.
 
-```{r}
+```{r hypotest-action}
 set.seed(5000)
 sampmedian_diff <- movies %>%
   group_by(action) %>%
@@ -509,7 +511,7 @@ Interestingly, the medians tend to be lower than we predicted; assuming that gre
 
 First, we computed our sample difference on which to base the test – we found a median difference of .633 between major and non-major production companies in our sample.
 
-```{r}
+```{r sample-median-calc}
 sampmedian_diff <- movies %>%
   filter(!is.na(if_major) & !is.na(pratio)) %>%
   group_by(if_major) %>%
@@ -525,7 +527,7 @@ Null: There is no difference in pratio based on a relationship with major and no
 
 Alternative: There is a difference in pratio based on a relationship with major and non-major production companies.
 
-```{r}
+```{r hypotest-major}
 set.seed(5000)
 null_dist <- movies %>%
   specify(response = pratio, explanatory = if_major) %>%

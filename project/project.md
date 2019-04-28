@@ -16,7 +16,7 @@ the market. In this project, we will be attempting to address the
 research question of what specific factors have the most effect in
 predicting the profitability of a film.
 
-### Stuff
+### Beginning Steps
 
 In order to conduct our analysis, we will be using a dataset from Kaggle
 known as the “TMBD 5000 Movie Dataset”. This dataset is a collection of
@@ -142,7 +142,7 @@ were created by name-brand companies, a fact that suggests that
 financial resources must not have been the primary reason for the
 failure of many movies.
 
-### Creating a “Profitability” Variables
+### Creating “Profitability” Variables
 
 In order to investigate the financial success of movies, we defined two
 variables which we will hereafter refer to as “profitability” variables.
@@ -255,7 +255,7 @@ have higher pratios.
 
     ## [1] 0.5147204
 
-![](project_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](project_files/figure-gfm/hypotest-horror-1.png)<!-- -->
 
     ## # A tibble: 1 x 1
     ##   pvalue
@@ -284,9 +284,9 @@ horror movies created. Below are two visualizations: first, an
 examination of the profitability over time and secondly a glance at the
 number of horror movies created in each year.
 
-![](project_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](project_files/figure-gfm/profitability-horror-1.png)<!-- -->
 
-![](project_files/figure-gfm/horror-1.png)<!-- -->
+![](project_files/figure-gfm/horror-frequency-1.png)<!-- -->
 
 The relationship between these two graphs is interesting, as they seem
 to mirror each other to a certain extent. Observe two main similarities.
@@ -318,7 +318,7 @@ movies.
 
     ## [1] -0.2232571
 
-![](project_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](project_files/figure-gfm/hypotest-action-1.png)<!-- -->
 
     ## # A tibble: 1 x 1
     ##   pvalue
@@ -463,7 +463,7 @@ major and non-major production companies.
 Alternative: There is a difference in pratio based on a relationship
 with major and non-major production companies.
 
-![](project_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](project_files/figure-gfm/hypotest-major-1.png)<!-- -->
 
     ## # A tibble: 1 x 1
     ##   pvalue
