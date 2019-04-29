@@ -114,13 +114,13 @@ boot_dist %>%
   )
 ```
 
-The above values, 2.20 and 2.39, allow me to state with 95% confidence that the true median pratio for movies lies between 2.20 and 2.39. This conclusion is surprising; one would intuitively expect a majority, or at least sizeable minority, of movies to achieve break-even status or less. Rather, the confidence interval establishes that, with 95% certainty, around half of movies – those greater than the median – have pratios in excess of 2.20 while¬¬¬ far less than half of movies fail to be profitable.  Making a successful movie may be easier than we thought!
+The above values, 2.20 and 2.39, allow me to state with 95% confidence that the true median pratio for movies lies between 2.20 and 2.39. This conclusion is surprising; one would intuitively expect a majority, or at least sizeable minority, of movies to achieve break-even status or less. Rather, the confidence interval establishes that, with 95% certainty, around half of movies – those greater than the median – have pratios in excess of 2.20 while far less than half of movies fail to be profitable.  Making a successful movie may be easier than we thought!
 
-After the above glance at profitability in general, we’ve will now create a few more variables with which to analyze profitability and examine some different trends.
+After the above glance at profitability in general, we will now create a few more variables with which to analyze profitability and examine some different trends.
 
 ### Categorical Spoken English Variable
 
-Recall that we originally filtered the data for movies whose “original_language” was English; there are a multitude of movies who still features spoken languages other than English. Consequently, we will be mutating a new variable, “english” which splits movies into two groups – those that are entirely spoken in English and those that features other languages. We will use this variable later in our analysis, but we hypothesize that English-only movies will earn higher revenues. 
+Recall that we originally filtered the data for movies whose “original_language” was English; there are a multitude of movies who still features spoken languages other than English. Consequently, we will be mutating a new variable, “english” which splits movies into two groups – those that are entirely spoken in English and those that feature other languages. We will use this variable later in our analysis, but we hypothesize that English-only movies will earn higher revenues. 
 
 ```{r spoken-languages}
 
@@ -137,9 +137,9 @@ movies <- movies %>%
 ```
 
 
-### Splitting date variable
+### Numerical Split Date Variable 
 
-We will now wrangle the dates in the dataset for use in the next segment, a process which requires us to convery the dates in the data to a better form. The dates in the dataset originally came in character form as “yr-mo-day” form, but character format isn’t particularly useful for analyzing dates – rather, a numeric form is preferred. We split the character format into 3 parts and converted the values to 3 numeric variables as day, month, and year. 
+We will now wrangle the dates in the dataset for use in the next segment, a process which requires us to convery the dates in the data to a better form. The dates in the dataset originally came in character form as “yr-mo-day," but character format isn’t particularly useful for analyzing dates – rather, a numeric form is preferred. We split the character format into 3 parts and converted the values to 3 numeric variables as day, month, and year. 
 
 ```{r separate-date-variable}
 movies <- movies %>%
@@ -152,7 +152,7 @@ movies <- movies %>%
 
 ### Genre Trends
 
-Now that we have a proper format for our dates, we can analyze another characteristic’s effect on profitability over time – genres. In order to create a genre variable, we used a string detect function that scans for “Horror” under a movie’s genres. We have decided to work with the “horror” genre specifically as we noticed that they generally have lower budgets than other types of films. See below a table that reflects the stark difference – non-horror movies seem to cost nearly twice as much.
+Now that we have a proper format for our dates, we can analyze another characteristic’s effect on profitability over time – genre. In order to create a genre variable, we used a string detect function that scans for “Horror” under a movie’s genres. We have decided to work with the “horror” genre specifically as we noticed that they generally have lower budgets than other types of films. See below a table that reflects the stark difference – non-horror movies seem to cost nearly twice as much.
 
 ```{r genre-trends}
 movies <- movies %>%
@@ -364,7 +364,7 @@ null_distr <- movies %>%
 
 ```{r title-distr-vis}
 ggplot(null_distr, aes(x = stat)) +
-  geom_histogram() +
+  geom_histogram(binwidth = 30) +
   geom_vline(xintercept = sample_stat, color = "red") +
   geom_vline(xintercept = sample_stat * -1, color = "red")+
   labs(title = "Null Distribution of Differences in Medians")
@@ -399,15 +399,17 @@ movies <- movies %>%
     month == 7 & day %in% c(3, 4, 5) ~ "yes",
     # Flex period for Labor Day
     month == 9 & day %in% c(1, 2, 3, 4, 5, 6, 7) ~ "yes",
+    # Halloween (and the days before and after)
+    month == 10 & day %in% c(30, 31) ~ "yes",
     # Flex period for Thanksgiving, Veterans' Day (and the days before and after)
-    month == 11 & day %in% c(10, 11, 12, 22, 23, 24, 25, 26, 27, 28) ~ "yes",
+    month == 11 & day %in% c(1, 10, 11, 12, 22, 23, 24, 25, 26, 27, 28) ~ "yes",
     TRUE ~ "no"
   ))
 ```
 
 We will use this variable later in a final linear model.
 
-### Making a variable for likely sequels
+### Likely Sequels
 
 ```{r likely-sequel}
 series <- movies$title %>%
@@ -428,10 +430,10 @@ movies <- movies %>%
   ))
 ```
 
-We’ve also created a variable for likely sequels; the “likely” refers to the fact that our system for generating this variable relies on the most obvious indicators and will likely have both false negatives and false positives. However, the system is reliable enough for our purposes in this investigation. Essentially, we mutated likely_sequel to return a “yes” response if a string detect detects a number in the movie’s title or a colon, both of which commonly appear in sequels. We suspect that a movie’s status as a sequel will decrease its revenue, since many believe that sequels tend to be worse than their predecessors. On the other hand, sequels draw additional revenue since fans of a prior movie will commit to seeing the new version. 
+We’ve also created a variable for likely sequels; the “likely” refers to the fact that our system for generating this variable relies on the most obvious indicators and will likely have both false negatives and false positives. However, the system is reliable enough for our purposes in this investigation. Essentially, we mutated likely_sequel to return a “yes” response if a string detect detects a 2 or 3 at the end of a movie’s title or a colon within the title, both of which commonly appear in members of a series. We suspect that a movie’s status as a sequel will decrease its revenue, since many believe that sequels tend to be worse than their predecessors. On the other hand, sequels draw additional revenue since fans of a prior movie will commit to seeing the new version. 
 
 
-### Making a variable for major production companies
+### Major Production Companies
 
 The next variable that we’ve created is “if_major”, which expresses whether a given movie is a created by a major production company. We’ve determined which studios are “major” based on some outside research; the list of major producers includes Universal Pictures, Paramount Pictures, WarnerBros. Pictures, Walt Disney Pictures, Columbia Pictures, Lionsgate, Dreamworks, Twentieth Century Fox, Pixar, and Marvel. In order to create this variable, we used a sequence of str_detect functions and converted their results with a case_when function.
 
@@ -504,7 +506,10 @@ pc_analysis <- movies %>%
 
 ggplot(data = pc_analysis, aes(x = reorder(major_productionco, median), y = median, fill = major_productionco)) +
   geom_bar(stat = "identity") +
-  coord_flip()
+  coord_flip() +
+  labs(title = "Median Profitability Ratio by Major Production Company", 
+       x = "Production Company", y = "Median Pratio") +
+  scale_fill_discrete(name = "Production Company")
 ```
 
 Interestingly, the medians tend to be lower than we predicted; assuming that greater budget leads to greater revenue, these major producers should be achieving maximum profitability, which they clearly do not with the exception of Pixar, who outperforms the other companies by two to three times as much profitability. In order to be certain about major companies as a whole, however, we ran a hypothesis test below. 
@@ -552,10 +557,10 @@ null_dist %>%
   )
 ```
 
-Generating a null distribution of 1000 values and applying our sample statistic bounds, we find a p-value of zero, suggesting that there is convincing evidence that there is a difference in pratio between major and non-major production companies. Furthermore, based on the above values for a 95% confidence interval, we can state with 95% confidence that the true difference in median pratio between major and non-major produced movies is between -.183 and .198.
+Generating a null distribution of 2000 values and applying our sample statistic bounds, we find a p-value of zero, suggesting that there is convincing evidence that there is a difference in pratio between major and non-major production companies. Furthermore, based on the above values for a 95% confidence interval, we can state with 95% confidence that the true difference in median pratio between major and non-major produced movies is between -.183 and .198.
 
 
-### Making a variable for tagline length
+### Tagline Length
 
 The next variable we’ve created is tagline length – this is a simple measurement of the character length of the movie’s tagline or “promotional statement” generally attached to the movie’s promotional materials. 
 
@@ -569,7 +574,7 @@ movies %>%
 
 Here are a few examples of movie taglines. We have applied a str_length function to each tagline to form our tagline length variable "tag_length". 
 
-### Making a preliminary linear model
+### Preliminary Linear Model
 
 We aim to find an ideal linear model to predict profitability ratio based on a variety of factors; before constructing our model, we will remove observations that lack values for these factors. 
 
@@ -582,7 +587,7 @@ movies_filt <- movies_filt %>%
   mutate(major_productionco = fct_relevel(major_productionco, "other"))
 ```
 
-Now that we’ve created all of our variables, we can begin to create a linear model to try and predict profitability. First, we have removed all NA values for the variables under consideration, although this step is not shown. The only NA values in the dataset were present exclusively in the new tagline variable, however. 
+Now that we’ve created all of our variables, we can begin to create a linear model to try and predict profitability. First, we have removed all NA values for the variables under consideration, although this step is not shown. However, the only NA values in the dataset were present in the new tagline variable. 
 
 Below, we've fitted an initial linear model which takes into account all of the variables previously mentioned as well as a few interactions: budget and if_major, due to the clear relationship between being a major company and having access to a large budget, and budget * likely_sequel, due to the funding relationship that a movie might have with a successful predecessor.
 
@@ -592,17 +597,14 @@ m_pratio
 
 tidy(m_pratio) %>%
   select(term, estimate)
-
 ```
 
 Linear Model: 
 
-Profitability Ratio = `r tidy(m_pratio)[1,2]` + `r tidy(m_pratio)[2,2]`(Holiday Release) + `r tidy(m_pratio)[3,2]`(Likely Sequel) + `r tidy(m_pratio)[4,2]`(Budget) + `r tidy(m_pratio)[5,2]`(Major Production Company) + `r tidy(m_pratio)[6,2]`(20th Century Fox) `r tidy(m_pratio)[7,2]`(Columbia) + + `r tidy(m_pratio)[8,2]`(Disney) + `r tidy(m_pratio)[9,2]`(DreamWorks) + `r tidy(m_pratio)[10,2]`(Lionsgate) + `r tidy(m_pratio)[11,2]`(Marvel) + `r tidy(m_pratio)[12,2]`(Paramount) + `r tidy(m_pratio)[13,2]`(Pixar) + `r tidy(m_pratio)[14,2]`(Universal) + `r tidy(m_pratio)[15,2]`(Tagline Length) + `r tidy(m_pratio)[16,2]`(Spoken Language English) + `r tidy(m_pratio)[17,2]`(Runtime) + `r tidy(m_pratio)[18,2]`(Action) + `r tidy(m_pratio)[19,2]`(Horror) + `r tidy(m_pratio)[20,2]`(One Word Title) + `r tidy(m_pratio)[21,2]`(Budget * Major Production Company) + `r tidy(m_pratio)[22,2]`(Likely Sequel * Budget)
+Profitability Ratio = `r tidy(m_pratio)[1,2]` + `r tidy(m_pratio)[2,2]`(Holiday Release) + `r tidy(m_pratio)[3,2]`(Likely Sequel) + `r tidy(m_pratio)[4,2]`(Budget) + `r tidy(m_pratio)[5,2]`(Major Production Company) + `r tidy(m_pratio)[6,2]`(20th Century Fox) `r tidy(m_pratio)[7,2]`(Columbia) + + `r tidy(m_pratio)[8,2]`(Disney) + `r tidy(m_pratio)[9,2]`(DreamWorks) + `r tidy(m_pratio)[10,2]`(Lionsgate) + `r tidy(m_pratio)[11,2]`(Marvel) + `r tidy(m_pratio)[12,2]`(Paramount) + `r tidy(m_pratio)[13,2]`(Pixar) + `r tidy(m_pratio)[14,2]`(Universal) + `r tidy(m_pratio)[15,2]`(Tagline Length) + `r tidy(m_pratio)[16,2]`(Spoken Language English) + `r tidy(m_pratio)[17,2]`(Runtime) + `r tidy(m_pratio)[18,2]`(Action) + `r tidy(m_pratio)[19,2]`(Horror) + `r tidy(m_pratio)[20,2]`(Few Word Title) + `r tidy(m_pratio)[21,2]`(Budget * Major Production Company) + `r tidy(m_pratio)[22,2]`(Likely Sequel * Budget)
 
 
 ```{r r-orig-model}
-glance(m_pratio)
-
 rsq <- glance(m_pratio)$adj.r.squared
 ```
 
@@ -621,7 +623,7 @@ We performed backwards selection based on AIC. Consequently, our selected model 
 
 Selected Linear Model: 
 
-Profitability Ratio = `r tidy(selected_m_pratio)[1,2]` + `r tidy(selected_m_pratio)[2,2]`(Holiday Release) + `r tidy(selected_m_pratio)[3,2]`(Likely Sequel) + `r tidy(selected_m_pratio)[4,2]`(Budget) + `r tidy(selected_m_pratio)[5,2]`(Major Production Company) + `r tidy(selected_m_pratio)[6,2]`(Spoken Language English) + `r tidy(selected_m_pratio)[7,2]`(Runtime) + `r tidy(selected_m_pratio)[8,2]`(Action) + `r tidy(selected_m_pratio)[9,2]`(Horror) + `r tidy(m_pratio)[10,2]`(One Word Title) + `r tidy(m_pratio)[11,2]`(Budget * Major Production Company) + `r tidy(m_pratio)[12,2]`(Likely Sequel * Budget)
+Profitability Ratio = `r tidy(selected_m_pratio)[1,2]` + `r tidy(selected_m_pratio)[2,2]`(Holiday Release) + `r tidy(selected_m_pratio)[3,2]`(Likely Sequel) + `r tidy(selected_m_pratio)[4,2]`(Budget) + `r tidy(selected_m_pratio)[5,2]`(Major Production Company) + `r tidy(selected_m_pratio)[6,2]`(Spoken Language English) + `r tidy(selected_m_pratio)[7,2]`(Runtime) + `r tidy(selected_m_pratio)[8,2]`(Action) + `r tidy(selected_m_pratio)[9,2]`(Horror) + `r tidy(m_pratio)[10,2]`(Budget * Major Production Company) + `r tidy(m_pratio)[11,2]`(Likely Sequel * Budget)
 
 Below is a comparison of the preliminary model's AIC compared to the selected model's AIC. Note that the lower value accompanies the selected model.
 
@@ -637,11 +639,11 @@ newrsq <- glance(selected_m_pratio)$r.squared
 newrsq
 ```
 
-Our R-squared value of `r newrsq` for our final selected model indicates that `r newrsq *100`% of the variation in profitability ratio can be well-explained by a linear relationship with the selected variables.
+Our R-squared value of `r newrsq` for our final selected model indicates that `r newrsq *100`% of the variation in profitability ratio can be well-explained by a linear relationship with the selected variables (holiday release, likely sequel, budget, major production company, English spoken language, runtime, action genre, horror genre, budget/major production interaction, and budget/likely sequel interaction).
 
-### A quick look at budget vs revenue
+### Budget's Relationship to Revenue
 
-As a final visualization and analysis, we looked at the relationship between budget and revenue. We created a single variable linear regression with budget as the explanatory variable, which led to an equation based on the values below
+As a final visualization and analysis, we looked at the relationship between budget and revenue. We created a single variable linear regression with budget as the explanatory variable, which led to an equation based on the values below.
 
 ```{r budget-revenue-model}
 m_revenue <- lm(revenue ~ budget, data = movies)
@@ -652,7 +654,7 @@ tidy(m_revenue) %>%
 rsq_mrevenue <- glance(m_revenue)$r.squared
 ```
 
-Regression: Revenue = 143491 + 2.98(budget)
+Linear Model: Revenue = 143491 + 2.98(Budget)
 
 The above equation nets an R-Squared value of `r rsq_mrevenue`, implying that approximately 49.73% of the linear variation in revenue can be well-explained by a linear relationship with budget. 
 
@@ -662,11 +664,11 @@ ggplot(data = movies, aes(x = budget, y = revenue, color = if_major)) +
   stat_smooth(method = "lm", se = FALSE)
 ```
 
-In this final visualization, we have colored data points by whether they were created by a major company or not and colored it accordingly. Note that the slope of the major companies’ regression line is steeper, and the data points tend to be placed further to the right and up due to the greater resources of larger companies. All of the highest budgeted movies were created by major companies. 
+In this final visualization, we have colored data points by whether they were created by a major production company or not. Note that the slope of the major companies’ regression line is steeper, meaning that our linear models predict a higher expected revenue for a major company's film than a non-major company's film with the same budget. The major company data points tend to be placed further to the upper right due to the greater resources of larger companies. All of the highest budgeted movies were created by major companies.
 
 ### Conclusion
 
-Our final R-Squared value of only around .04 is dissapointing predictive power on the part of our final model, but there are a few issues with our analysis that we believe may be lowering this value. Firstly, the dataset has a few key issues. 
+Our final R-Squared value of only around .04 is dissapointing predictive power on the part of our selected linear model, but there are a few issues with our analysis that we believe may be lowering this value. Firstly, the dataset has a few key issues. 
 
 There are data entry errors and inconsistencies. Specifically, as we have discussed prior, certain budgets are underestimated by six orders of magnitude. These irregular data points can wreak havoc on any sort of linear relationship between budget and other variables. While we've removed the most egregious offenders, there may still be examples of budgets underestimated by 3 or less orders of magnitude that can lower our R-Squared value.
 
@@ -676,5 +678,5 @@ Inflation may also play a part in our strange findings; some values have been ad
 
 Even with a fairly low R-Squared value, we can still draw some interesting conclusions about the data and apply our findings to the real world. Firstly, budget is not an exclusive gatekeeper to a successful film; any combination of enough of the other preferential traits we have analyzed can create success, even in spite of a low budget. We see this truth as well as its contrafactual with a simple glance at two films: Pirates of the Caribbean: On Stranger Tides and Paranormal Activity. The former failed under the influence of the highest budget while the latter is the most profitable movie of all time by percentage with a budget less than $100,000. 
 
-With specific reference to our investigation question of what factors make a movie profitable, we have seen firsthand the difficulty of predicting the success of a movie; this isn't surprising when one considers that there are still movies being made today that consider all of the above variables, but still fail. The variables we have selected play a small, but important role in a movie's success. Even with an R-Squared value of only .04 and consequent well-explained linear relationship, a 4% difference in pratio can account for millions or tens of millions of dollars. The most valuable information that we have found may not come in the form of what companies need to focus on, but rather the factors on which they should avoid wasting resources - taglines, for example. As we've seen with the horror genre, every reduction of cost - cutting out unncecessary factors - increases the potential for very high profitability ratios. 
+With specific reference to our investigation question of what factors make a movie profitable, we have seen firsthand the difficulty of predicting the success of a movie; this isn't surprising when one considers that there are still movies being made today that consider all of the above variables, but still fail. The variables we have selected play a small, but important role in a movie's success. Even with an R-Squared value of only .04 and consequent well-explained linear relationship, a 4% difference in pratio can account for millions or tens of millions of dollars. The most valuable information that we have found may not come in the form of what companies need to focus on, but rather the factors on which they should avoid wasting resources - taglines, for example. As we've seen with the horror genre, every reduction of cost - cutting out unncecessary factors - increases the potential for very high profitability ratios.
 

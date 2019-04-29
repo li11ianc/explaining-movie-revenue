@@ -183,12 +183,12 @@ conclusion is surprising; one would intuitively expect a majority, or at
 least sizeable minority, of movies to achieve break-even status or less.
 Rather, the confidence interval establishes that, with 95% certainty,
 around half of movies – those greater than the median – have pratios in
-excess of 2.20 while¬¬¬ far less than half of movies fail to be
-profitable. Making a successful movie may be easier than we thought\!
+excess of 2.20 while far less than half of movies fail to be profitable.
+Making a successful movie may be easier than we thought\!
 
-After the above glance at profitability in general, we’ve will now
-create a few more variables with which to analyze profitability and
-examine some different trends.
+After the above glance at profitability in general, we will now create a
+few more variables with which to analyze profitability and examine some
+different trends.
 
 ### Categorical Spoken English Variable
 
@@ -197,24 +197,24 @@ Recall that we originally filtered the data for movies whose
 still features spoken languages other than English. Consequently, we
 will be mutating a new variable, “english” which splits movies into two
 groups – those that are entirely spoken in English and those that
-features other languages. We will use this variable later in our
+feature other languages. We will use this variable later in our
 analysis, but we hypothesize that English-only movies will earn higher
 revenues.
 
-### Splitting date variable
+### Numerical Split Date Variable
 
 We will now wrangle the dates in the dataset for use in the next
 segment, a process which requires us to convery the dates in the data to
 a better form. The dates in the dataset originally came in character
-form as “yr-mo-day” form, but character format isn’t particularly useful
-for analyzing dates – rather, a numeric form is preferred. We split the
+form as “yr-mo-day,” but character format isn’t particularly useful for
+analyzing dates – rather, a numeric form is preferred. We split the
 character format into 3 parts and converted the values to 3 numeric
 variables as day, month, and year.
 
 ### Genre Trends
 
 Now that we have a proper format for our dates, we can analyze another
-characteristic’s effect on profitability over time – genres. In order to
+characteristic’s effect on profitability over time – genre. In order to
 create a genre variable, we used a string detect function that scans for
 “Horror” under a movie’s genres. We have decided to work with the
 “horror” genre specifically as we noticed that they generally have
@@ -379,10 +379,7 @@ Alternative Hypothesis: Pratio is dependent on title length.
 
 Using the sample median above, we will create a null distribution of the
 difference in medians (“yes” - “no”) with 1000 repetitions and a
-permutation simulation
-    type.
-
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+permutation simulation type.
 
 ![](project_files/figure-gfm/title-distr-vis-1.png)<!-- -->
 
@@ -413,21 +410,22 @@ holidays and “no” for non-holidays.
 
 We will use this variable later in a final linear model.
 
-### Making a variable for likely sequels
+### Likely Sequels
 
 We’ve also created a variable for likely sequels; the “likely” refers to
 the fact that our system for generating this variable relies on the most
 obvious indicators and will likely have both false negatives and false
 positives. However, the system is reliable enough for our purposes in
 this investigation. Essentially, we mutated likely\_sequel to return a
-“yes” response if a string detect detects a number in the movie’s
-title or a colon, both of which commonly appear in sequels. We suspect
-that a movie’s status as a sequel will decrease its revenue, since many
-believe that sequels tend to be worse than their predecessors. On the
-other hand, sequels draw additional revenue since fans of a prior movie
-will commit to seeing the new version.
+“yes” response if a string detect detects a 2 or 3 at the end of a
+movie’s title or a colon within the title, both of which commonly appear
+in members of a series. We suspect that a movie’s status as a sequel
+will decrease its revenue, since many believe that sequels tend to be
+worse than their predecessors. On the other hand, sequels draw
+additional revenue since fans of a prior movie will commit to seeing the
+new version.
 
-### Making a variable for major production companies
+### Major Production Companies
 
 The next variable that we’ve created is “if\_major”, which expresses
 whether a given movie is a created by a major production company. We’ve
@@ -476,7 +474,7 @@ with major and non-major production companies.
     ##    <dbl> <dbl>
     ## 1 -0.183 0.198
 
-Generating a null distribution of 1000 values and applying our sample
+Generating a null distribution of 2000 values and applying our sample
 statistic bounds, we find a p-value of zero, suggesting that there is
 convincing evidence that there is a difference in pratio between major
 and non-major production companies. Furthermore, based on the above
@@ -484,7 +482,7 @@ values for a 95% confidence interval, we can state with 95% confidence
 that the true difference in median pratio between major and non-major
 produced movies is between -.183 and .198.
 
-### Making a variable for tagline length
+### Tagline Length
 
 The next variable we’ve created is tagline length – this is a simple
 measurement of the character length of the movie’s tagline or
@@ -509,7 +507,7 @@ Here are a few examples of movie taglines. We have applied a str\_length
 function to each tagline to form our tagline length variable
 “tag\_length”.
 
-### Making a preliminary linear model
+### Preliminary Linear Model
 
 We aim to find an ideal linear model to predict profitability ratio
 based on a variety of factors; before constructing our model, we will
@@ -518,8 +516,8 @@ remove observations that lack values for these factors.
 Now that we’ve created all of our variables, we can begin to create a
 linear model to try and predict profitability. First, we have removed
 all NA values for the variables under consideration, although this step
-is not shown. The only NA values in the dataset were present exclusively
-in the new tagline variable, however.
+is not shown. However, the only NA values in the dataset were present in
+the new tagline variable.
 
 Below, we’ve fitted an initial linear model which takes into account all
 of the variables previously mentioned as well as a few interactions:
@@ -537,27 +535,27 @@ with a successful predecessor.
     ## 
     ## Coefficients:
     ##                  (Intercept)            holiday_releaseyes  
-    ##                    2.920e+00                    -1.142e+00  
+    ##                    2.923e+00                    -1.003e+00  
     ##             likely_sequelyes                        budget  
-    ##                   -1.653e+00                    -6.483e-08  
+    ##                   -1.642e+00                    -6.462e-08  
     ##                  if_majoryes       major_productionco20thc  
-    ##                   -5.043e-01                     1.943e+00  
+    ##                   -5.088e-01                     1.958e+00  
     ##   major_productioncocolumbia      major_productioncodisney  
-    ##                   -6.863e-01                     1.536e+00  
+    ##                   -6.753e-01                     1.544e+00  
     ## major_productioncodreamworks   major_productioncolionsgate  
-    ##                    4.269e-01                    -1.159e+00  
+    ##                    4.379e-01                    -1.165e+00  
     ##     major_productioncomarvel   major_productioncoparamount  
-    ##                    2.482e+00                     1.653e+00  
+    ##                    2.493e+00                     1.662e+00  
     ##      major_productioncopixar   major_productioncouniversal  
-    ##                    5.552e+00                     1.349e+00  
+    ##                    5.992e+00                     1.351e+00  
     ##     major_productioncowarner                    tag_length  
-    ##                           NA                    -3.972e-03  
+    ##                           NA                    -3.897e-03  
     ##                   englishyes                       runtime  
-    ##                    6.922e-01                     3.145e-02  
+    ##                    6.887e-01                     3.126e-02  
     ##                    actionyes                     horroryes  
-    ##                   -6.916e-01                     1.946e+00  
+    ##                   -6.952e-01                     1.951e+00  
     ##                 few_wordsyes            budget:if_majoryes  
-    ##                    9.441e-02                     2.390e-08  
+    ##                    8.991e-02                     2.377e-08  
     ##      likely_sequelyes:budget  
     ##                    3.145e-08
 
@@ -565,121 +563,115 @@ with a successful predecessor.
     ##    term                              estimate
     ##    <chr>                                <dbl>
     ##  1 (Intercept)                   2.92        
-    ##  2 holiday_releaseyes           -1.14        
-    ##  3 likely_sequelyes             -1.65        
-    ##  4 budget                       -0.0000000648
-    ##  5 if_majoryes                  -0.504       
-    ##  6 major_productionco20thc       1.94        
-    ##  7 major_productioncocolumbia   -0.686       
+    ##  2 holiday_releaseyes           -1.00        
+    ##  3 likely_sequelyes             -1.64        
+    ##  4 budget                       -0.0000000646
+    ##  5 if_majoryes                  -0.509       
+    ##  6 major_productionco20thc       1.96        
+    ##  7 major_productioncocolumbia   -0.675       
     ##  8 major_productioncodisney      1.54        
-    ##  9 major_productioncodreamworks  0.427       
+    ##  9 major_productioncodreamworks  0.438       
     ## 10 major_productioncolionsgate  -1.16        
     ## # … with 12 more rows
 
 Linear Model:
 
-Profitability Ratio = 2.9202948 + -1.1415792(Holiday Release) +
--1.6533754(Likely Sequel) + -6.483095110^{-8}(Budget) + -0.5043299(Major
-Production Company) + 1.9426156(20th Century Fox) -0.6862866(Columbia) +
-+ 1.536474(Disney) + 0.4268544(DreamWorks) + -1.1593277(Lionsgate) +
-2.4821382(Marvel) + 1.6528298(Paramount) + 5.5518353(Pixar) +
-1.348584(Universal) + -0.0039722(Tagline Length) + 0.6921555(Spoken
-Language English) + 0.0314541(Runtime) + -0.6916269(Action) +
-1.9458229(Horror) + 0.0944092(One Word Title) + 2.389925810^{-8}(Budget
-\* Major Production Company) + 3.145362310^{-8}(Likely Sequel \* Budget)
+Profitability Ratio = 2.9228729 + -1.002717(Holiday Release) +
+-1.6420389(Likely Sequel) + -6.462254910^{-8}(Budget) + -0.5087599(Major
+Production Company) + 1.9575888(20th Century Fox) -0.6753433(Columbia) +
++ 1.5440485(Disney) + 0.4378846(DreamWorks) + -1.1649161(Lionsgate) +
+2.4928524(Marvel) + 1.6622895(Paramount) + 5.9916577(Pixar) +
+1.3506983(Universal) + -0.0038971(Tagline Length) + 0.6886865(Spoken
+Language English) + 0.0312551(Runtime) + -0.6951732(Action) +
+1.950557(Horror) + 0.0899086(Few Word Title) + 2.377437610^{-8}(Budget
+\* Major Production Company) + 3.145394910^{-8}(Likely Sequel \* Budget)
 
-    ## # A tibble: 1 x 11
-    ##   r.squared adj.r.squared sigma statistic  p.value    df  logLik    AIC
-    ##       <dbl>         <dbl> <dbl>     <dbl>    <dbl> <int>   <dbl>  <dbl>
-    ## 1    0.0481        0.0411  9.81      6.86 8.86e-20    22 -10634. 21313.
-    ## # … with 3 more variables: BIC <dbl>, deviance <dbl>, df.residual <int>
-
-We compute the adjusted R-squared value for the model as 0.0410583; this
+We compute the adjusted R-squared value for the model as 0.0407478; this
 is a helpful measure of the goodness of the fit of the model.
 
 Below, we have performed backwards selection on our preliminary model
 and arrive at an optimal model.
 
-    ## Start:  AIC=13152.26
+    ## Start:  AIC=13153.19
     ## pratio ~ holiday_release + likely_sequel + budget + if_major + 
     ##     major_productionco + tag_length + english + runtime + action + 
     ##     horror + runtime + few_words + budget * if_major + likely_sequel * 
     ##     budget
     ## 
     ##                        Df Sum of Sq    RSS   AIC
-    ## - major_productionco    9   1449.22 276085 13149
-    ## - few_words             1      3.96 274640 13150
-    ## - tag_length            1     24.52 274661 13150
-    ## <none>                              274636 13152
-    ## - action                1    242.00 274878 13153
-    ## - english               1    280.22 274916 13153
-    ## - holiday_release       1    447.76 275084 13155
-    ## - budget:if_major       1    547.32 275184 13156
-    ## - horror                1    958.28 275595 13160
-    ## - likely_sequel:budget  1    983.00 275619 13160
-    ## - runtime               1   1031.77 275668 13161
+    ## - major_productionco    9   1461.70 276187 13150
+    ## - few_words             1      3.59 274729 13151
+    ## - tag_length            1     23.60 274749 13151
+    ## <none>                              274725 13153
+    ## - action                1    244.34 274969 13154
+    ## - english               1    277.43 275003 13154
+    ## - holiday_release       1    358.84 275084 13155
+    ## - budget:if_major       1    541.58 275267 13157
+    ## - horror                1    962.88 275688 13161
+    ## - likely_sequel:budget  1    982.94 275708 13162
+    ## - runtime               1   1018.79 275744 13162
     ## 
-    ## Step:  AIC=13149.39
+    ## Step:  AIC=13150.45
     ## pratio ~ holiday_release + likely_sequel + budget + if_major + 
     ##     tag_length + english + runtime + action + horror + few_words + 
     ##     budget:if_major + likely_sequel:budget
     ## 
     ##                        Df Sum of Sq    RSS   AIC
-    ## - few_words             1      3.69 276089 13147
-    ## - tag_length            1     32.57 276118 13148
-    ## <none>                              276085 13149
-    ## - action                1    222.82 276308 13150
-    ## - english               1    270.36 276356 13150
-    ## - holiday_release       1    408.12 276494 13152
-    ## - budget:if_major       1    587.75 276673 13154
-    ## - horror                1    893.65 276979 13157
-    ## - runtime               1    973.58 277059 13158
-    ## - likely_sequel:budget  1   1065.49 277151 13158
+    ## - few_words             1      3.33 276190 13148
+    ## - tag_length            1     31.46 276218 13149
+    ## <none>                              276187 13150
+    ## - action                1    224.55 276411 13151
+    ## - english               1    267.59 276454 13151
+    ## - holiday_release       1    306.72 276494 13152
+    ## - budget:if_major       1    582.54 276769 13154
+    ## - horror                1    898.14 277085 13158
+    ## - runtime               1    959.81 277147 13158
+    ## - likely_sequel:budget  1   1066.78 277254 13160
     ## 
-    ## Step:  AIC=13147.43
+    ## Step:  AIC=13148.48
     ## pratio ~ holiday_release + likely_sequel + budget + if_major + 
     ##     tag_length + english + runtime + action + horror + budget:if_major + 
     ##     likely_sequel:budget
     ## 
     ##                        Df Sum of Sq    RSS   AIC
-    ## - tag_length            1     31.54 276121 13146
-    ## <none>                              276089 13147
-    ## - action                1    224.51 276314 13148
-    ## - english               1    270.75 276360 13148
-    ## - holiday_release       1    408.22 276497 13150
-    ## - budget:if_major       1    587.99 276677 13152
-    ## - horror                1    891.10 276980 13155
-    ## - runtime               1    975.48 277065 13156
-    ## - likely_sequel:budget  1   1069.48 277159 13156
+    ## - tag_length            1     30.50 276221 13147
+    ## <none>                              276190 13148
+    ## - action                1    226.19 276416 13149
+    ## - english               1    267.96 276458 13149
+    ## - holiday_release       1    307.18 276497 13150
+    ## - budget:if_major       1    582.76 276773 13152
+    ## - horror                1    895.73 277086 13156
+    ## - runtime               1    961.60 277152 13156
+    ## - likely_sequel:budget  1   1070.60 277261 13158
     ## 
-    ## Step:  AIC=13145.76
+    ## Step:  AIC=13146.8
     ## pratio ~ holiday_release + likely_sequel + budget + if_major + 
     ##     english + runtime + action + horror + budget:if_major + likely_sequel:budget
     ## 
     ##                        Df Sum of Sq    RSS   AIC
-    ## <none>                              276121 13146
-    ## - action                1    218.39 276339 13146
-    ## - english               1    281.30 276402 13147
-    ## - holiday_release       1    404.84 276526 13148
-    ## - budget:if_major       1    593.86 276715 13150
-    ## - horror                1    918.17 277039 13153
-    ## - runtime               1    950.99 277072 13154
-    ## - likely_sequel:budget  1   1062.44 277183 13155
+    ## <none>                              276221 13147
+    ## - action                1    220.16 276441 13147
+    ## - english               1    278.30 276499 13148
+    ## - holiday_release       1    304.83 276526 13148
+    ## - budget:if_major       1    588.54 276809 13151
+    ## - horror                1    922.45 277143 13154
+    ## - runtime               1    937.80 277158 13154
+    ## - likely_sequel:budget  1   1063.66 277284 13156
 
     ## # A tibble: 11 x 2
     ##    term                         estimate
     ##    <chr>                           <dbl>
     ##  1 (Intercept)              2.95        
-    ##  2 holiday_releaseyes      -1.08        
-    ##  3 likely_sequelyes        -1.47        
-    ##  4 budget                  -0.0000000649
-    ##  5 if_majoryes              0.217       
-    ##  6 englishyes               0.692       
-    ##  7 runtime                  0.0296      
-    ##  8 actionyes               -0.647       
+    ##  2 holiday_releaseyes      -0.920       
+    ##  3 likely_sequelyes        -1.46        
+    ##  4 budget                  -0.0000000647
+    ##  5 if_majoryes              0.220       
+    ##  6 englishyes               0.688       
+    ##  7 runtime                  0.0294      
+    ##  8 actionyes               -0.650       
     ##  9 horroryes                1.89        
-    ## 10 budget:if_majoryes       0.0000000246
-    ## 11 likely_sequelyes:budget  0.0000000321
+    ## 10 budget:if_majoryes       0.0000000244
+    ## 11 likely_sequelyes:budget  0.0000000322
 
 We performed backwards selection based on AIC. Consequently, our
 selected model has a lower AIC value than the preliminary model - a fact
@@ -687,33 +679,37 @@ which shows that the selected model is a better fit.
 
 Selected Linear Model:
 
-Profitability Ratio = 2.9470363 + -1.0828735(Holiday Release) +
--1.4716737(Likely Sequel) + -6.491333510^{-8}(Budget) + 0.2173254(Major
-Production Company) + 0.691595(Spoken Language English) +
-0.029626(Runtime) + -0.647395(Action) + 1.8903615(Horror) +
--1.1593277(One Word Title) + 2.4821382(Budget \* Major Production
-Company) + 1.6528298(Likely Sequel \* Budget)
+Profitability Ratio = 2.9487984 + -0.9201344(Holiday Release) +
+-1.4621091(Likely Sequel) + -6.472213110^{-8}(Budget) + 0.2197986(Major
+Production Company) + 0.6878798(Spoken Language English) +
+0.029422(Runtime) + -0.6502594(Action) + 1.8949267(Horror) +
+-1.1649161(Budget \* Major Production Company) + 2.4928524(Likely Sequel
+\* Budget)
 
 Below is a comparison of the preliminary model’s AIC compared to the
 selected model’s AIC. Note that the lower value accompanies the selected
 model.
 
-    ## [1] 21313.16
+    ## [1] 21314.09
 
-    ## [1] 21306.65
+    ## [1] 21307.7
 
-    ## [1] 0.04291985
+    ## [1] 0.04257321
 
-Our R-squared value of 0.0429198 for our final selected model indicates
-that 4.2919848% of the variation in profitability ratio can be
-well-explained by a linear relationship with the selected variables.
+Our R-squared value of 0.0425732 for our final selected model indicates
+that 4.2573205% of the variation in profitability ratio can be
+well-explained by a linear relationship with the selected variables
+(holiday release, likely sequel, budget, major production company,
+English spoken language, runtime, action genre, horror genre,
+budget/major production interaction, and budget/likely sequel
+interaction).
 
-### A quick look at budget vs revenue
+### Budget’s Relationship to Revenue
 
 As a final visualization and analysis, we looked at the relationship
 between budget and revenue. We created a single variable linear
 regression with budget as the explanatory variable, which led to an
-equation based on the values below
+equation based on the values below.
 
     ## # A tibble: 2 x 2
     ##   term         estimate
@@ -721,7 +717,7 @@ equation based on the values below
     ## 1 (Intercept) 143491.  
     ## 2 budget           2.98
 
-Regression: Revenue = 143491 + 2.98(budget)
+Linear Model: Revenue = 143491 + 2.98(Budget)
 
 The above equation nets an R-Squared value of 0.497329, implying that
 approximately 49.73% of the linear variation in revenue can be
@@ -730,18 +726,20 @@ well-explained by a linear relationship with budget.
 ![](project_files/figure-gfm/visualize-revenue-model-1.png)<!-- -->
 
 In this final visualization, we have colored data points by whether they
-were created by a major company or not and colored it accordingly. Note
-that the slope of the major companies’ regression line is steeper, and
-the data points tend to be placed further to the right and up due to the
-greater resources of larger companies. All of the highest budgeted
+were created by a major production company or not. Note that the slope
+of the major companies’ regression line is steeper, meaning that our
+linear models predict a higher expected revenue for a major company’s
+film than a non-major company’s film with the same budget. The major
+company data points tend to be placed further to the upper right due to
+the greater resources of larger companies. All of the highest budgeted
 movies were created by major companies.
 
 ### Conclusion
 
 Our final R-Squared value of only around .04 is dissapointing predictive
-power on the part of our final model, but there are a few issues with
-our analysis that we believe may be lowering this value. Firstly, the
-dataset has a few key issues.
+power on the part of our selected linear model, but there are a few
+issues with our analysis that we believe may be lowering this value.
+Firstly, the dataset has a few key issues.
 
 There are data entry errors and inconsistencies. Specifically, as we
 have discussed prior, certain budgets are underestimated by six orders
