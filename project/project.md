@@ -773,7 +773,12 @@ budget. We see this truth as well as its contrafactual with a simple
 glance at two films: Pirates of the Caribbean: On Stranger Tides and
 Paranormal Activity. The former failed under the influence of the
 highest budget while the latter is the most profitable movie of all time
-by percentage with a budget less than $100,000.
+by percentage with a budget less than $100,000. Furthermore, the
+importance of genre and production company far exceeded our
+expectations; we expected movies in different genres to have roughly
+equal profitability and for large companies to have fairly similar skill
+at earning revenue, but specific companies far exceed expectations while
+certain genres are far more prone to profitable movies.
 
 With specific reference to our investigation question of what factors
 make a movie profitable, we have seen firsthand the difficulty of
