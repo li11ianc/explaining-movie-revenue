@@ -273,8 +273,8 @@ ggplot(data = null_dist, aes(x = stat)) +
   labs(title = "Null distribution of differences in medians")
 
 null_dist %>%
-  filter(stat >= -sampmedian_diff ) %>%
-  summarise(pvalue = 2 *(n() / 1000))
+  filter(stat >= -sampmedian_diff | stat <= sampmedian_diff) %>%
+  summarise(pvalue = (n() / 1000))
 
 null_dist %>%
   summarise(
@@ -283,7 +283,7 @@ null_dist %>%
   )
 ```
 
-From our hypothesis test, we found a p-value of .046 – below our alpha level of .05. Thus, we do have convincing evidence to reject a null hypothesis of no difference in pratios, thus concluding that there is evidence of a difference in median pratios between action movies and non action movies. We’ve also computed a 95% confidence interval for the true median difference between action and non-action movies in that order, arriving at values of -0.188 and .215. Consequently, we can state with 95% confidence that the true typical difference in median pratios for action and non-action movies lies between -.188 and .215. 
+From our hypothesis test, we found a p-value of .039 – below our alpha level of .05. Thus, we do have convincing evidence to reject a null hypothesis of no difference in pratios, thus concluding that there is evidence of a difference in median pratios between action movies and non action movies. We’ve also computed a 95% confidence interval for the true median difference between action and non-action movies in that order, arriving at values of -0.188 and .215. Consequently, we can state with 95% confidence that the true typical difference in median pratios for action and non-action movies lies between -.185 and .227. 
 
 In a similar process, we examined the profitability and frequency of action movies over time. 
 
@@ -364,7 +364,7 @@ null_distr <- movies %>%
 
 ```{r title-distr-vis}
 ggplot(null_distr, aes(x = stat)) +
-  geom_histogram(binwidth = 30) +
+  geom_histogram(binwidth = .02) +
   geom_vline(xintercept = sample_stat, color = "red") +
   geom_vline(xintercept = sample_stat * -1, color = "red")+
   labs(title = "Null Distribution of Differences in Medians")
@@ -557,7 +557,7 @@ null_dist %>%
   )
 ```
 
-Generating a null distribution of 2000 values and applying our sample statistic bounds, we find a p-value of zero, suggesting that there is convincing evidence that there is a difference in pratio between major and non-major production companies. Furthermore, based on the above values for a 95% confidence interval, we can state with 95% confidence that the true difference in median pratio between major and non-major produced movies is between -.183 and .198.
+Generating a null distribution of 1000 values and applying our sample statistic bounds, we find a p-value of zero, suggesting that there is convincing evidence that there is a difference in pratio between major and non-major production companies. Furthermore, based on the above values for a 95% confidence interval, we can state with 95% confidence that the true difference in median pratio between major and non-major produced movies is between -.183 and .198.
 
 
 ### Tagline Length
@@ -631,7 +631,7 @@ If a film is produced by a major production company, all else held constant, its
 
 For every increase of 1 in budget, all else held constant, we expect a decrease of about 6.47e-8 in expected pratio. This may seem extremely small, but the median budget for the dataset is 27 million dollars, which, multiplied by 6.47e-8, leads to an expected decrease of about 1.75 in pratio.
 
-If a movie is a holiday release (all else held constant), its expectec pratio will decrease by about 0.92.
+If a movie is a holiday release (all else held constant), its expected pratio will decrease by about 0.92.
 
 Below is a comparison of the preliminary model's AIC compared to the selected model's AIC. Note that the lower value accompanies the selected model.
 
@@ -663,6 +663,8 @@ rsq_mrevenue <- glance(m_revenue)$r.squared
 ```
 
 Linear Model: Revenue = 143491 + 2.98(Budget)
+
+We interpret the budget coefficient to mean that for every increase of \$1 in budget, there will be an increase of about \$2.98 in expected revenue. The intercept of this model indicates that for a film with a budget of zero dollars, we expect a revenue of about 143,491. However, we filtered out all of the points in our data set with budgets of zero and so this value is not likely an accurate interpretation.
 
 The above equation nets an R-Squared value of `r rsq_mrevenue`, implying that approximately 49.73% of the linear variation in revenue can be well-explained by a linear relationship with budget. 
 

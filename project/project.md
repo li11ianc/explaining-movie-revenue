@@ -323,14 +323,14 @@ movies.
     ## # A tibble: 1 x 1
     ##   pvalue
     ##    <dbl>
-    ## 1  0.052
+    ## 1  0.039
 
     ## # A tibble: 1 x 2
     ##    lower upper
     ##    <dbl> <dbl>
     ## 1 -0.185 0.227
 
-From our hypothesis test, we found a p-value of .046 – below our alpha
+From our hypothesis test, we found a p-value of .039 – below our alpha
 level of .05. Thus, we do have convincing evidence to reject a null
 hypothesis of no difference in pratios, thus concluding that there is
 evidence of a difference in median pratios between action movies and non
@@ -338,7 +338,7 @@ action movies. We’ve also computed a 95% confidence interval for the
 true median difference between action and non-action movies in that
 order, arriving at values of -0.188 and .215. Consequently, we can state
 with 95% confidence that the true typical difference in median pratios
-for action and non-action movies lies between -.188 and .215.
+for action and non-action movies lies between -.185 and .227.
 
 In a similar process, we examined the profitability and frequency of
 action movies over time.
@@ -474,7 +474,7 @@ with major and non-major production companies.
     ##    <dbl> <dbl>
     ## 1 -0.183 0.198
 
-Generating a null distribution of 2000 values and applying our sample
+Generating a null distribution of 1000 values and applying our sample
 statistic bounds, we find a p-value of zero, suggesting that there is
 convincing evidence that there is a difference in pratio between major
 and non-major production companies. Furthermore, based on the above
@@ -697,7 +697,7 @@ small, but the median budget for the dataset is 27 million dollars,
 which, multiplied by 6.47e-8, leads to an expected decrease of about
 1.75 in pratio.
 
-If a movie is a holiday release (all else held constant), its expectec
+If a movie is a holiday release (all else held constant), its expected
 pratio will decrease by about 0.92.
 
 Below is a comparison of the preliminary model’s AIC compared to the
@@ -732,6 +732,13 @@ equation based on the values below.
     ## 2 budget           2.98
 
 Linear Model: Revenue = 143491 + 2.98(Budget)
+
+We interpret the budget coefficient to mean that for every increase of
+$1 in budget, there will be an increase of about $2.98 in expected
+revenue. The intercept of this model indicates that for a film with a
+budget of zero dollars, we expect a revenue of about 143,491. However,
+we filtered out all of the points in our data set with budgets of zero
+and so this value is not likely an accurate interpretation.
 
 The above equation nets an R-Squared value of 0.497329, implying that
 approximately 49.73% of the linear variation in revenue can be
