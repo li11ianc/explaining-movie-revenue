@@ -808,3 +808,13 @@ the factors on which they should avoid wasting resources - taglines, for
 example. As we’ve seen with the horror genre, every reduction of cost -
 cutting out unncecessary factors - increases the potential for very high
 profitability ratios.
+
+Ultimately, our analysis around individual variables proved to be more
+fruitful than our attempt to model in the aggregate. A majority of our
+most surprising takeaways came not from the model, but from our various
+hypothesis tests and visualizations; for example, the correlation of a
+short title length with increased profitability is a simple observation
+that could easily be applied to the real world. Furthermore, our
+hypothesis tests revealed that most of the variables we analyzed had
+statistically significant effects on pratio, even if these relationships
+did not appear in the linear model.
