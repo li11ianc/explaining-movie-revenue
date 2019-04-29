@@ -625,6 +625,14 @@ Selected Linear Model:
 
 Profitability Ratio = `r tidy(selected_m_pratio)[1,2]` + `r tidy(selected_m_pratio)[2,2]`(Holiday Release) + `r tidy(selected_m_pratio)[3,2]`(Likely Sequel) + `r tidy(selected_m_pratio)[4,2]`(Budget) + `r tidy(selected_m_pratio)[5,2]`(Major Production Company) + `r tidy(selected_m_pratio)[6,2]`(Spoken Language English) + `r tidy(selected_m_pratio)[7,2]`(Runtime) + `r tidy(selected_m_pratio)[8,2]`(Action) + `r tidy(selected_m_pratio)[9,2]`(Horror) + `r tidy(m_pratio)[10,2]`(Budget * Major Production Company) + `r tidy(m_pratio)[11,2]`(Likely Sequel * Budget)
 
+We interpret a few terms of this model:
+
+If a film is produced by a major production company, all else held constant, its expected pratio will increase by about 0.22.
+
+For every increase of 1 in budget, all else held constant, we expect a decrease of about 6.47e-8 in expected pratio. This may seem extremely small, but the median budget for the dataset is 27 million dollars, which, multiplied by 6.47e-8, leads to an expected decrease of about 1.75 in pratio.
+
+If a movie is a holiday release (all else held constant), its expectec pratio will decrease by about 0.92.
+
 Below is a comparison of the preliminary model's AIC compared to the selected model's AIC. Note that the lower value accompanies the selected model.
 
 ```{r aic-model-comparison}
@@ -661,7 +669,8 @@ The above equation nets an R-Squared value of `r rsq_mrevenue`, implying that ap
 ```{r visualize-revenue-model}
 ggplot(data = movies, aes(x = budget, y = revenue, color = if_major)) +
   geom_jitter(alpha = .3) +
-  stat_smooth(method = "lm", se = FALSE)
+  stat_smooth(method = "lm", se = FALSE) +
+  labs(title = "Budget vs. Revenue", subtitle = "For Major and Non-Major Production Companies")
 ```
 
 In this final visualization, we have colored data points by whether they were created by a major production company or not. Note that the slope of the major companies’ regression line is steeper, meaning that our linear models predict a higher expected revenue for a major company's film than a non-major company's film with the same budget. The major company data points tend to be placed further to the upper right due to the greater resources of larger companies. All of the highest budgeted movies were created by major companies.
@@ -676,7 +685,7 @@ The other broad category of data error is the currency issue noted previously. A
 
 Inflation may also play a part in our strange findings; some values have been adjusted for inflation while others have not. Furthermore, the inflation adjustments might be made using different "base years" for certain observations. Consequently, the linear relationship can be comfounded and muddled by the effects of inflation on the data.
 
-Even with a fairly low R-Squared value, we can still draw some interesting conclusions about the data and apply our findings to the real world. Firstly, budget is not an exclusive gatekeeper to a successful film; any combination of enough of the other preferential traits we have analyzed can create success, even in spite of a low budget. We see this truth as well as its contrafactual with a simple glance at two films: Pirates of the Caribbean: On Stranger Tides and Paranormal Activity. The former failed under the influence of the highest budget while the latter is the most profitable movie of all time by percentage with a budget less than $100,000. Furthermore, the importance of genre and production company far exceeded our expectations; we expected movies in different genres to have roughly equal profitability and for large companies to have fairly similar skill at earning revenue, but specific companies far exceed expectations while certain genres are far more prone to profitable movies. 
+Even with a fairly low R-Squared value, we can still draw some interesting conclusions about the data and apply our findings to the real world. Firstly, budget is not an exclusive gatekeeper to a successful film; any combination of enough of the other preferential traits we have analyzed can create success, even in spite of a low budget. We see this truth as well as its contrafactual with a simple glance at two films: Pirates of the Caribbean: On Stranger Tides and Paranormal Activity. The former failed under the influence of the highest budget while the latter is the most profitable movie of all time by percentage with a budget less than $100,000. 
 
 With specific reference to our investigation question of what factors make a movie profitable, we have seen firsthand the difficulty of predicting the success of a movie; this isn't surprising when one considers that there are still movies being made today that consider all of the above variables, but still fail. The variables we have selected play a small, but important role in a movie's success. Even with an R-Squared value of only .04 and consequent well-explained linear relationship, a 4% difference in pratio can account for millions or tens of millions of dollars. The most valuable information that we have found may not come in the form of what companies need to focus on, but rather the factors on which they should avoid wasting resources - taglines, for example. As we've seen with the horror genre, every reduction of cost - cutting out unncecessary factors - increases the potential for very high profitability ratios.
 

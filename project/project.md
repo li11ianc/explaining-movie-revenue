@@ -686,6 +686,20 @@ Production Company) + 0.6878798(Spoken Language English) +
 -1.1649161(Budget \* Major Production Company) + 2.4928524(Likely Sequel
 \* Budget)
 
+We interpret a few terms of this model:
+
+If a film is produced by a major production company, all else held
+constant, its expected pratio will increase by about 0.22.
+
+For every increase of 1 in budget, all else held constant, we expect a
+decrease of about 6.47e-8 in expected pratio. This may seem extremely
+small, but the median budget for the dataset is 27 million dollars,
+which, multiplied by 6.47e-8, leads to an expected decrease of about
+1.75 in pratio.
+
+If a movie is a holiday release (all else held constant), its expectec
+pratio will decrease by about 0.92.
+
 Below is a comparison of the preliminary model’s AIC compared to the
 selected model’s AIC. Note that the lower value accompanies the selected
 model.
@@ -771,12 +785,7 @@ budget. We see this truth as well as its contrafactual with a simple
 glance at two films: Pirates of the Caribbean: On Stranger Tides and
 Paranormal Activity. The former failed under the influence of the
 highest budget while the latter is the most profitable movie of all time
-by percentage with a budget less than $100,000. Furthermore, the
-importance of genre and production company far exceeded our
-expectations; we expected movies in different genres to have roughly
-equal profitability and for large companies to have fairly similar skill
-at earning revenue, but specific companies far exceed expectations while
-certain genres are far more prone to profitable movies.
+by percentage with a budget less than $100,000.
 
 With specific reference to our investigation question of what factors
 make a movie profitable, we have seen firsthand the difficulty of
