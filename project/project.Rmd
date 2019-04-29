@@ -672,7 +672,9 @@ The above equation nets an R-Squared value of `r rsq_mrevenue`, implying that ap
 ggplot(data = movies, aes(x = budget, y = revenue, color = if_major)) +
   geom_jitter(alpha = .3) +
   stat_smooth(method = "lm", se = FALSE) +
-  labs(title = "Budget vs. Revenue", subtitle = "For Major and Non-Major Production Companies")
+  labs(title = "Budget vs. Revenue", subtitle = "For Major and Non-Major Production Companies", 
+       x = "Budget in USD", y = "Revenue in USD") +
+  scale_fill_discrete(name = "Major Producer?")
 ```
 
 In this final visualization, we have colored data points by whether they were created by a major production company or not. Note that the slope of the major companies’ regression line is steeper, meaning that our linear models predict a higher expected revenue for a major company's film than a non-major company's film with the same budget. The major company data points tend to be placed further to the upper right due to the greater resources of larger companies. All of the highest budgeted movies were created by major companies.
