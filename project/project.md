@@ -817,4 +817,10 @@ short title length with increased profitability is a simple observation
 that could easily be applied to the real world. Furthermore, our
 hypothesis tests revealed that most of the variables we analyzed had
 statistically significant effects on pratio, even if these relationships
-did not appear in the linear model.
+did not appear in the linear model. A genre of horror, a genre of
+action, and title length all have statistically significant impacts on
+the pratio of a movie. Moviemakers would be well advised to consider
+these specific factors; however, it is difficult, if not impossible, to
+predict the profitability of a movie from the factors in our data in
+aggregate. Perhaps one should avoid a big picture perspective when it
+comes to the cinema.
